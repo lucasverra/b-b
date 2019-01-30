@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload | bench & berg</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.1/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/dropzone.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12  text-center">
+            <h1>bench <br>& berg</h1>
+        </div>
+    </div>
+</div>
+<div id="wrapper">
+
+    <div class="loading">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div class="file-upload">
+        <div class="image-upload-wrap">
+
+            <input class="file-upload-input" type='file' id="input-excel" />
+            <i class="material-icons">cloud_upload</i>
+            <div class="drag-text">
+                <h3>Drag and drop a file or Click</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--<script src="js/parse_excel.js"></script>-->
+<script>
+    var myDropzone = new Dropzone(".file-upload-input",{
+        url: 'upload',
+        uploadMultiple: false,
+//        acceptedFiles: 'application/xls,application/excel,application/vnd.ms-excel,application/vnd.ms-excel; charset=binary,application/msexcel,application/x-excel,application/x-msexcel,application/x-ms-excel,application/x-dos_ms_excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        init : function() {
+            myDropzone=this;
+            //Restore initial message when queue has been completed
+            this.on("drop", function(event) {
+                $('.loading').show();
+                var rABS = true;
+                var files=this.files;
+//                console.log(files);
+
+            });
+            this.on("drop", function(event) {
+                $('.loading').show();
+                var rABS = true;
+                var files=this.files;
+            });
+            myDropzone.on("addedfile", function(file) {
+                $('.loading').show();
+                console.log('dropzone file added ');
+            });
+            myDropzone.on("complete", function(file) {
+                uploaded_excel(file);
+            });
+        }
+    });
+
+    function uploaded_excel(file){
+        $('.loading').show();
+        var rABS = true;
+        f=file;
+        var reader = new FileReader();
+        var name = f.name;
+        reader.onload = function(e) {
+            var data = e.target.result;
+            var workbook;
+            if(rABS) {
+                /* if binary string, read with type 'binary' */
+                workbook = XLSX.read(data, {type: 'binary'});
+            } else {
+                /* if array buffer, convert to base64 */
+                var arr = fixdata(data);
+                workbook = XLSX.read(btoa(arr), {type: 'base64'});
+            }
+            
+            var arrayOfData=to_json(workbook);
+            var theadHtml="";
+            var tbodyHtml="";
+            console.log(arrayOfData);
+            var myDbName=workbook.SheetNames[0];
+            myDbName=myDbName.replace(/ /g,"_");
+            var r = Math.random().toString(36).substring(7);
+            myDbName=myDbName+'-'+r;
+            var marqueArray=[];
+            var codeBBArray=[];
+            var repeatedCodeBBArray=[];
+            var ean13Array=[];
+            var repeatedEan13Array=[];
+            var emptyMarqueArray=[];
+            var emptyCodeBBArray=[];
+            var emptyEan13Array=[];
+            $.each(arrayOfData, function (index,subArray) {
+                for (var key in subArray) {
+                    for (var key1 in subArray[key]) {
+                        if(key1 == '__EMPTY_14' && key != 0){
+                            if(subArray[key][key1] != ""){
+                                if (marqueArray.indexOf(subArray[key][key1]) === -1) {
+                                    marqueArray.push(subArray[key][key1]);
+                                }
+                            }
+                            else{
+                                emptyMarqueArray.push('empty');
+                            }
+                        }
+                        if(key1 == '__EMPTY_3' && key != 0){
+                            if(subArray[key][key1] != ""){
+                                if (codeBBArray.indexOf(subArray[key][key1]) === -1) {
+                                    codeBBArray.push(subArray[key][key1]);
+                                }
+                                else{
+                                    repeatedCodeBBArray.push(subArray[key][key1]);
+                                }
+                            }
+                            else{
+                                emptyCodeBBArray.push('empty');
+                            }
+                        }
+                        if(key1 == '__EMPTY_6' && key != 0){
+                            if(subArray[key][key1] != ""){
+                                if (ean13Array.indexOf(subArray[key][key1]) === -1) {
+                                    ean13Array.push(subArray[key][key1]);
+                                }
+                                else{
+                                    repeatedEan13Array.push(subArray[key][key1]);
+                                }
+                            }
+                            else{
+                                emptyEan13Array.push('empty');
+                            }
+                        }
+                    }
+                }
+            });
+
+            if(marqueArray.length > 1){
+                $('#wrapper').append(' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne marque possède plus d’une valeur.' +
+                    '        </div>' +
+                    '    </div>');
+            }
+            if(emptyMarqueArray.length > 0){
+                $('#wrapper').append(' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne marque n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>');
+            }
+            if(emptyCodeBBArray.length > 0){
+                $('#wrapper').append(' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             La colonne CODE B&B n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>');
+            }
+            if(repeatedCodeBBArray.length > 0){
+                $('#wrapper').append(' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             La colonne CODE B&B a des éléments égaux.' +
+                    '        </div>' +
+                    '    </div>');
+            }
+            if(emptyEan13Array.length > 0){
+                $('#wrapper').append(' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             La colonne EAN 13 n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>');
+            }
+            if(repeatedEan13Array.length > 0){
+                $('#wrapper').append(' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne EAN 13 a des éléments égaux.' +
+                    '        </div>' +
+                    '    </div>');
+            }
+            if(marqueArray.length == 1 && emptyMarqueArray.length == 0 && emptyCodeBBArray.length == 0 && repeatedCodeBBArray.length == 0 && emptyEan13Array.length == 0 && repeatedEan13Array.length == 0){
+                localStorage.setItem("myDbName", myDbName);
+                createMyDatabase(myDbName,arrayOfData);
+            }
+//
+
+            $('.loading').hide();
+//            alert('fjekdfnsk');
+            /* DO SOMETHING WITH workbook HERE */
+        };
+        reader.readAsBinaryString(f);
+    }
+    function to_json(workbook) {
+        var result = {};
+        workbook.SheetNames.forEach(function(sheetName) {
+            var roa = XLS.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            if(roa.length > 0){
+                result[sheetName] = roa;
+            }
+        });
+        return result;
+    }
+
+    var db;
+
+    function indexedDBOk() {
+        return "indexedDB" in window;
+    }
+
+    function createMyDatabase(db_name,jsonData) {
+        //No support? Go in the corner and pout.
+        if(!indexedDBOk) return;
+
+        var openRequest = indexedDB.open(db_name,1);
+
+        openRequest.onupgradeneeded = function(e) {
+            var thisDB = e.target.result;
+
+            if(!thisDB.objectStoreNames.contains(db_name)) {
+                thisDB.createObjectStore(db_name);
+            }
+        }
+
+        openRequest.onsuccess = function(e) {
+            console.log("running onsuccess");
+
+            db = e.target.result;
+            var transaction = db.transaction([db_name],"readwrite");
+            var store = transaction.objectStore(db_name);
+
+            //Perform the add
+            var request = store.add(jsonData,1);
+
+            request.onerror = function(e) {
+                alert("Error",e.target.error.name);
+                //some type of error handler
+            }
+
+            request.onsuccess = function(e) {
+                console.log("Woot! Did it");
+                window.location.href='filter';
+            }
+            //Listen for add clicks
+//                document.querySelector("#addButton").addEventListener("click", addPerson, false);
+        }
+
+        openRequest.onerror = function(e) {
+            //Do something for the error
+        }
+
+    }
+    //        document.addEventListener("DOMContentLoaded", function() {
+    //
+    //            //No support? Go in the corner and pout.
+    //            if(!indexedDBOk) return;
+    //
+    //            var openRequest = indexedDB.open("sheet_database1",1);
+    //
+    //            openRequest.onupgradeneeded = function(e) {
+    //                var thisDB = e.target.result;
+    //
+    //                if(!thisDB.objectStoreNames.contains("sheet_database1")) {
+    //                    thisDB.createObjectStore("sheet_database1");
+    //                }
+    //            }
+    //
+    //            openRequest.onsuccess = function(e) {
+    //                console.log("running onsuccess");
+    //
+    //                db = e.target.result;
+    //
+    //                //Listen for add clicks
+    ////                document.querySelector("#addButton").addEventListener("click", addPerson, false);
+    //            }
+    //
+    //            openRequest.onerror = function(e) {
+    //                //Do something for the error
+    //            }
+    //
+    //        },false);
+
+    function addPerson(jsonData,db_name) {
+
+        console.log("About to add ");
+
+        var transaction = db.transaction([db_name],"readwrite");
+        var store = transaction.objectStore(db_name);
+
+        //Perform the add
+        var request = store.add(jsonData,1);
+
+        request.onerror = function(e) {
+            console.log("Error",e.target.error.name);
+            //some type of error handler
+        }
+
+        request.onsuccess = function(e) {
+            console.log("Woot! Did it");
+        }
+    }
+</script>
+</body>
+</html>

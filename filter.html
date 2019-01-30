@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filter | bench & berg</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<div class="loading">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead id="theadHtml">
+
+                    </thead>
+                    <tbody id="tbodyHtml">
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $('.loading').show();
+    var dbName=localStorage.getItem("myDbName");
+    var openRequest = indexedDB.open(dbName,1);
+    openRequest.onsuccess = function(e) {
+        console.log("running onsuccess");
+
+        db = e.target.result;
+        var objectStore = db.transaction(dbName).objectStore(dbName);
+
+        objectStore.openCursor().onsuccess = function(event) {
+            var cursor = event.target.result;
+
+            if (cursor) {
+                console.log(cursor);
+                $.each(cursor.value, function (index,subArray) {
+                    for (var key in subArray) {
+                        if(key == 0){
+                            theadHtml+="<tr>";
+                            for (var key1 in subArray[key]) {
+                                theadHtml += '<th>'+key1+'</th>';
+                            }
+                            theadHtml+="</tr>";
+                        }
+                        tbodyHtml+="<tr>";
+
+                        for (var key1 in subArray[key]) {
+                            tbodyHtml += '<td>'+subArray[key][key1]+'</td>';
+                        }
+                        tbodyHtml+="</tr>";
+
+                    }
+                });
+                $('#theadHtml').html(theadHtml);
+                $('#tbodyHtml').html(tbodyHtml);
+                $('.loading').hide();
+//                alert("Name for id " + cursor.key + " is " + cursor.value.name + ", Age: " + cursor.value.age + ", Email: " + cursor.value.email);
+                cursor.continue();
+            } else {
+//                alert("No more entries!");
+            }
+        };
+    }
+
+
+</script>
+</body>
+</html>
