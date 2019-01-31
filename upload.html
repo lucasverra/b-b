@@ -10,8 +10,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.1/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/dropzone.js"></script>
-    <link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .bg-green,.bg-green:hover{
+            background-color: #00C851;
+            color: white;
+            padding: 20px 40px;
+            margin: 25px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -39,39 +46,48 @@
             </div>
         </div>
     </div>
-
+    <div id="errorMessages"></div>
+    <div class="bottomButtons text-center">
+        <center>
+            <button class="btn btn-flat btn-lg bg-green" onclick="processFile()">FICHIER TELECHARGE CLIQEZ POUR CONTINUER</button>
+        </center>
+    </div>
 </div>
 <!--<script src="js/parse_excel.js"></script>-->
 <script>
+    var fileForUpload="";
+    $(".file-upload-input").unbind( "click" );
+
     var myDropzone = new Dropzone(".file-upload-input",{
+
         url: 'upload',
         uploadMultiple: false,
-//        acceptedFiles: 'application/xls,application/excel,application/vnd.ms-excel,application/vnd.ms-excel; charset=binary,application/msexcel,application/x-excel,application/x-msexcel,application/x-ms-excel,application/x-dos_ms_excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
         init : function() {
             myDropzone=this;
             //Restore initial message when queue has been completed
-            this.on("drop", function(event) {
+
+            // $('.loading').show();
+            myDropzone.on("drop", function(file) {
                 $('.loading').show();
-                var rABS = true;
-                var files=this.files;
-//                console.log(files);
+            });
+
+            myDropzone.on("complete", function(file) {
+                $('.loading').hide();
+                fileForUpload=file;
+                $('.bottomButtons').show();
 
             });
-            this.on("drop", function(event) {
-                $('.loading').show();
-                var rABS = true;
-                var files=this.files;
-            });
-            myDropzone.on("addedfile", function(file) {
-                $('.loading').show();
-                console.log('dropzone file added ');
-            });
-            myDropzone.on("complete", function(file) {
-                uploaded_excel(file);
-            });
+            // $('.loading').hide();
         }
     });
-
+    function processFile() {
+        if(fileForUpload == ""){
+            alert('please select a file.');
+        }else{
+            uploaded_excel(fileForUpload);
+        }
+    }
     function uploaded_excel(file){
         $('.loading').show();
         var rABS = true;
@@ -89,8 +105,9 @@
                 var arr = fixdata(data);
                 workbook = XLSX.read(btoa(arr), {type: 'base64'});
             }
-            
+
             var arrayOfData=to_json(workbook);
+            console.log(arrayOfData);
             var theadHtml="";
             var tbodyHtml="";
             console.log(arrayOfData);
@@ -106,8 +123,12 @@
             var emptyMarqueArray=[];
             var emptyCodeBBArray=[];
             var emptyEan13Array=[];
+            var emptyNomArray=[];
+            var errorHTML='';
+            var finalArray=[];
             $.each(arrayOfData, function (index,subArray) {
                 for (var key in subArray) {
+                    var finalSubArray=[];
                     for (var key1 in subArray[key]) {
                         if(key1 == '__EMPTY_14' && key != 0){
                             if(subArray[key][key1] != ""){
@@ -131,6 +152,7 @@
                             else{
                                 emptyCodeBBArray.push('empty');
                             }
+                            finalSubArray['code_b_b']=subArray[key][key1];
                         }
                         if(key1 == '__EMPTY_6' && key != 0){
                             if(subArray[key][key1] != ""){
@@ -145,61 +167,94 @@
                                 emptyEan13Array.push('empty');
                             }
                         }
+                        if(key1 == '__EMPTY_7' && key != 0){
+                            if(subArray[key][key1] != ""){
+                            }
+                            else{
+                                emptyNomArray.push('empty');
+                            }
+                            finalSubArray['nom']=subArray[key][key1];
+                        }
+                        if(key1 == '__EMPTY_8' && key != 0){
+                            finalSubArray['category']=subArray[key][key1];
+                        }
+                        if(key1 == '__EMPTY_10' && key != 0){
+                            finalSubArray['couleur']=subArray[key][key1];
+                        }
+                    }
+                    if(key != 0){
+                        finalArray.push(finalSubArray);
                     }
                 }
-            });
 
+            });
+            console.log(finalArray);
             if(marqueArray.length > 1){
-                $('#wrapper').append(' <div class="container mt-20">' +
+                errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
                     '            La colonne marque possède plus d’une valeur.' +
                     '        </div>' +
-                    '    </div>');
+                    '    </div>';
             }
             if(emptyMarqueArray.length > 0){
-                $('#wrapper').append(' <div class="container mt-20">' +
+                errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
                     '            La colonne marque n’est pas complète.' +
                     '        </div>' +
-                    '    </div>');
+                    '    </div>';
             }
             if(emptyCodeBBArray.length > 0){
-                $('#wrapper').append(' <div class="container mt-20">' +
+                errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
                     '             La colonne CODE B&B n’est pas complète.' +
                     '        </div>' +
-                    '    </div>');
+                    '    </div>';
             }
             if(repeatedCodeBBArray.length > 0){
-                $('#wrapper').append(' <div class="container mt-20">' +
+                errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
                     '             La colonne CODE B&B a des éléments égaux.' +
                     '        </div>' +
-                    '    </div>');
+                    '    </div>';
             }
             if(emptyEan13Array.length > 0){
-                $('#wrapper').append(' <div class="container mt-20">' +
+                errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
                     '             La colonne EAN 13 n’est pas complète.' +
                     '        </div>' +
-                    '    </div>');
+                    '    </div>';
             }
             if(repeatedEan13Array.length > 0){
-                $('#wrapper').append(' <div class="container mt-20">' +
+                errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
                     '            La colonne EAN 13 a des éléments égaux.' +
                     '        </div>' +
-                    '    </div>');
+                    '    </div>';
+            }
+            if(emptyNomArray.length > 0){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne NOM n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>';
             }
             if(marqueArray.length == 1 && emptyMarqueArray.length == 0 && emptyCodeBBArray.length == 0 && repeatedCodeBBArray.length == 0 && emptyEan13Array.length == 0 && repeatedEan13Array.length == 0){
                 localStorage.setItem("myDbName", myDbName);
-                createMyDatabase(myDbName,arrayOfData);
+                createMyDatabase(myDbName,finalArray);
+
+                $('#errorMessages').html('<div class="container mt-20">' +
+                    '                   <div class="alert alert-success" role="alert">' +
+                    '                    ' +
+                    '                    </div> ' +
+                    '                    </div>');
+            }
+            else{
+                $('#errorMessages').html(errorHTML);
+                $('.bottomButtons').hide();
             }
 //
 
             $('.loading').hide();
-//            alert('fjekdfnsk');
-            /* DO SOMETHING WITH workbook HERE */
         };
         reader.readAsBinaryString(f);
     }

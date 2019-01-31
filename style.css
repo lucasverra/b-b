@@ -48,6 +48,7 @@
     outline: none;
     opacity: 0;
     cursor: pointer;
+    z-index: 999;
 }
 
 .image-upload-wrap {
@@ -136,4 +137,31 @@
 }
 .mt-20{
     margin-top: 20px;
+}
+.tableFixHead    {
+    overflow-y: auto;
+    height: 300px;
+    border-bottom: 1px solid #adb5bd;
+    border-top: 8px solid #adb5bd;
+    margin-bottom: 50px;
+}
+.tableFixHead th { position: sticky; top: 0; }
+
+table  { border-collapse: collapse; width: 100%; }
+th, td { padding: 8px 16px; }
+th     { background:#eee; }
+.bg-green,.bg-green:hover{
+    background-color: #00C851;
+    color: white;
+    padding: 20px 40px;
+    margin: 25px;
+}
+.bg-orange,.bg-orange:hover{
+    background-color: #FF7043;
+    color: white;
+    padding: 20px 40px;
+    margin: 25px;
+}
+#bigText{
+    font-size: 40px;
 }

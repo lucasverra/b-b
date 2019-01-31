@@ -8,6 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" ></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.1/xlsx.full.min.js"></script>
+    <script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -20,25 +22,27 @@
     <h1>bench <br>& berg</h1>
 </div>
 <div class="tableFixHead mt-20">
-        <table class="table table-bordered">
-            <thead id="theadHtml">
-                <tr>
-                    <th>#</th>
-                    <th>CODE B&B</th>
-                    <th>NOM</th>
-                    <th>CATEGORIE</th>
-                    <th>COULEUR</th>
-                    <th>PIEDS</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyHtml">
+    <table class="table table-bordered" id="excel-table">
+        <thead id="theadHtml">
+        <tr>
+            <th>#</th>
+            <th>CODE B&B</th>
+            <th>NOM</th>
+            <th>CATEGORIE</th>
+            <th>COULEUR</th>
+            <th>PIEDS</th>
+        </tr>
+        </thead>
+        <tbody id="tbodyHtml">
 
-            </tbody>
-        </table>
+        </tbody>
+    </table>
 </div>
-<div class="bottomButtons text-center">
+<div class="bottomButtons text-center" style="display:none;">
     <center>
-        <a href="export"><button class="btn btn-flat btn-lg bg-green">GO TO EXPORT</button></a>
+        <p id="bigText"></p>
+        <a href="filter"><button class="btn btn-flat btn-lg bg-orange">EDITER LA SÉLECTION</button></a>
+        <button onclick="exportEXCEL()" class="btn btn-flat btn-lg bg-green">TÉLÉCHARGER LE FICHIER D'OFFRE</button>
     </center>
 </div>
 <script>
@@ -61,13 +65,15 @@
                     tbodyHtml+="<tr>";
                     tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
                     for (var key in subArray) {
-                            tbodyHtml += '<td>'+subArray[key]+'</td>';
+                        tbodyHtml += '<td>'+subArray[key]+'</td>';
                     }
                     tbodyHtml+="<td></td>";
                     tbodyHtml+="</tr>";
                     countOfRows++;
                 });
                 $('#tbodyHtml').html(tbodyHtml);
+                $('#bigText').html('Vous avez sélectionne <b>'+countOfRows+'</b> produits');
+                $('.bottomButtons').show();
                 $('.loading').hide();
 //                alert("Name for id " + cursor.key + " is " + cursor.value.name + ", Age: " + cursor.value.age + ", Email: " + cursor.value.email);
                 cursor.continue();
@@ -76,7 +82,20 @@
             }
         };
     }
+</script>
+<script>
+    function exportEXCEL() {
+        var wb = XLSX.utils.table_to_book(document.getElementById('excel-table'), {sheet:"Sheet JS"});
+        var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+        saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'test.xlsx');
+    }
 
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
 
 </script>
 </body>
