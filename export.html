@@ -89,7 +89,19 @@
     function exportEXCEL() {
         var wb = XLSX.utils.table_to_book(document.getElementById('excel-table'), {sheet:"Sheet JS"});
         var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
-        saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), dbName+'.xlsx');
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var today = dd + mm + yyyy;
+        saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'B&B_ficher_offre_'+today+'_XXX.xlsx');
     }
 
     function s2ab(s) {
