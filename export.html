@@ -67,10 +67,13 @@
                     $.each(cursor.value, function (index,subArray) {
                         tbodyHtml+="<tr>";
                         tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
-                        for (var key in subArray) {
-                            tbodyHtml += '<td>'+subArray[key]+'</td>';
-                        }
-                        tbodyHtml+="<td></td>";
+                        // for (var key in subArray) {
+                        tbodyHtml += '<td>'+subArray['code_b_b']+'</td>';
+                        tbodyHtml += '<td>'+subArray['nom']+'</td>';
+                        tbodyHtml += '<td>'+subArray['category']+'</td>';
+                        tbodyHtml += '<td>'+subArray['couleur']+'</td>';
+                        tbodyHtml += '<td>'+subArray['pied']+'</td>';
+                        // }
                         tbodyHtml+="</tr>";
                         countOfRows++;
                     });
