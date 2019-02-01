@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filter | bench & berg</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="loading">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="text-center">
+    <h1>bench <br>& berg</h1>
+</div>
+<div class="tableFixHead mt-20">
+        <table class="table table-bordered">
+            <thead id="theadHtml">
+                <tr>
+                    <th>#</th>
+                    <th>CODE B&B</th>
+                    <th>NOM</th>
+                    <th>CATEGORIE</th>
+                    <th>COULEUR</th>
+                    <th>PIEDS</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyHtml">
+
+            </tbody>
+        </table>
+</div>
+<div class="bottomButtons text-center">
+    <center>
+        <a href="export"><button class="btn btn-flat btn-lg bg-green">GO TO EXPORT</button></a>
+    </center>
+</div>
+<script>
+    $('.loading').show();
+    var dbName=localStorage.getItem("myDbName");
+    if(dbName == ""){
+        alert('please upload a file again, its not having data in Indexdb to filter.');
+    }
+    else{
+        var openRequest = indexedDB.open(dbName,1);
+        openRequest.onsuccess = function(e) {
+            console.log("running onsuccess");
+
+            db = e.target.result;
+            var objectStore = db.transaction(dbName).objectStore(dbName);
+
+            objectStore.openCursor().onsuccess = function(event) {
+                var cursor = event.target.result;
+
+                if (cursor) {
+                    var countOfRows=0;
+                    console.log(cursor.value);
+                    $.each(cursor.value, function (index,subArray) {
+                        tbodyHtml+="<tr>";
+                        tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
+                        // for (var key in subArray) {
+                                tbodyHtml += '<td>'+subArray['code_b_b']+'</td>';
+                                tbodyHtml += '<td>'+subArray['nom']+'</td>';
+                                tbodyHtml += '<td>'+subArray['category']+'</td>';
+                                tbodyHtml += '<td>'+subArray['couleur']+'</td>';
+                                tbodyHtml += '<td>'+subArray['pied']+'</td>';
+                        // }
+                        tbodyHtml+="</tr>";
+                        countOfRows++;
+                    });
+                    $('#tbodyHtml').html(tbodyHtml);
+                    $('.loading').hide();
+                    cursor.continue();
+                } else {
+                }
+            };
+        }
+
+    }
+
+
+</script>
+</body>
+</html>

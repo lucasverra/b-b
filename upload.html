@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload | bench & berg</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.1/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/dropzone.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12  text-center">
+            <h1>bench <br>& berg</h1>
+        </div>
+    </div>
+</div>
+<div id="wrapper">
+
+    <div class="loading">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div class="file-upload">
+        <div class="image-upload-wrap">
+
+            <input class="file-upload-input" type='text' id="input-excel" />
+            <i class="material-icons">cloud_upload</i>
+            <div class="drag-text">
+                <h3>Drag and drop a file or Click</h3>
+            </div>
+        </div>
+    </div>
+    <div id="errorMessages"></div>
+    <div class="bottomButtons text-center" style="display:none;">
+        <center>
+            <a href="filter"><button class="btn btn-flat btn-lg bg-green">FICHIER TELECHARGE CLIQEZ POUR CONTINUER</button></a>
+        </center>
+    </div>
+</div>
+<script>
+    new Dropzone("#input-excel",{
+        url: 'upload',
+        uploadMultiple: false,
+        init : function() {
+            this.on("drop", function(file) {
+                $('.loading').show();
+                $('#errorMessages').html('');
+            });
+            this.on("addedfile", function(file) {
+                $('.loading').show();
+                $('#errorMessages').html('');
+            });
+            this.on("complete", function(file) {
+                uploaded_excel(file);
+            });
+        }
+    });
+    function uploaded_excel(file){
+        $('.loading').show();
+        var rABS = true;
+        f=file;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = e.target.result;
+            var workbook;
+            if(rABS) {
+                /* if binary string, read with type 'binary' */
+                workbook = XLSX.read(data, {type: 'binary'});
+            } else {
+                /* if array buffer, convert to base64 */
+                var arr = fixdata(data);
+                workbook = XLSX.read(btoa(arr), {type: 'base64'});
+            }
+
+            var arrayOfData=to_json(workbook);
+            // console.log(arrayOfData);
+            var myDbName=workbook.SheetNames[0];
+            myDbName=myDbName.replace(/ /g,"_");
+            var r = Math.random().toString(36).substring(7);
+            myDbName=myDbName+'-'+r;
+            var marqueArray=[];
+            var codeBBArray=[];
+            var repeatedCodeBBArray=[];
+            var ean13Array=[];
+            var repeatedEan13Array=[];
+            var emptyMarqueArray=[];
+            var emptyCodeBBArray=[];
+            var emptyEan13Array=[];
+            var emptyNomArray=[];
+            var errorHTML='';
+            var finalArray=[];
+
+            var marque="";
+            var codeB_B="";
+            var ean_13="";
+            var nom="";
+            var couleur="";
+            var category="";
+            var pied="";
+
+            // console.log(arrayOfData);
+            var sheetCount=0;
+            $.each(arrayOfData, function (index,subArray) {
+                if(sheetCount == 0){
+                    sheetCount = parseInt(sheetCount + 1);
+
+                    // console.log(index);
+                    for (var key in subArray) {
+                        if(key == 0){
+                            for (var key1 in subArray[key]) {
+                                var currentVal = subArray[key][key1];
+                                if (currentVal != "") {
+                                    currentVal = currentVal.trim().toLowerCase();
+                                }
+                                if (currentVal == "MARQUE" || currentVal == "marque") {
+                                    marque = key1;
+                                }
+                                if (currentVal == "CODE B&B" || currentVal == "code b&b") {
+                                    codeB_B = key1;
+                                }
+                                if (currentVal == "EAN 13" || currentVal == "ean 13") {
+                                    ean_13 = key1;
+                                }
+                                if (currentVal == "NOM" || currentVal == "nom") {
+                                    nom = key1;
+                                }
+                                if (currentVal == "couleur" || currentVal == "COULEUR") {
+                                    couleur = key1;
+                                }
+                                if (currentVal == "categorie" || currentVal == "CATEGORIE") {
+                                    category = key1;
+                                }
+                                if (currentVal == "pieds" || currentVal == "PIEDS") {
+                                    pied = key1;
+                                }
+                            }
+                        }
+                        else {
+                            var finalSubArray = [];
+                            finalSubArray['code_b_b'] = "";
+                            finalSubArray['nom'] = "";
+                            finalSubArray['category'] = "";
+                            finalSubArray['couleur'] = "";
+                            finalSubArray['pied'] = "";
+                            for (var key1 in subArray[key]) {
+                                if(key != 0) {
+                                    if (marque != "" && key1 == marque) {
+                                        if (subArray[key][marque] != "") {
+                                            if (marqueArray.indexOf(subArray[key][marque]) === -1) {
+                                                marqueArray.push(subArray[key][marque]);
+                                            }
+                                        }
+                                        else {
+                                            emptyMarqueArray.push('empty');
+                                        }
+                                    }
+                                    if (codeB_B != ""&& key1 == codeB_B) {
+                                        // console.log(subArray[key]);
+                                        // console.log(subArray[key][codeB_B]);
+                                        if (subArray[key][codeB_B] != "") {
+                                            if (codeBBArray.indexOf(subArray[key][codeB_B]) === -1) {
+                                                codeBBArray.push(subArray[key][codeB_B]);
+                                            }
+                                            else {
+                                                repeatedCodeBBArray.push(subArray[key][codeB_B]);
+                                            }
+                                        }
+                                        else {
+                                            emptyCodeBBArray.push('empty');
+                                        }
+                                        finalSubArray['code_b_b'] = subArray[key][codeB_B];
+                                    }
+                                    if (ean_13 != ""&& key1 == ean_13) {
+                                        if (subArray[key][ean_13] != "") {
+                                            if (ean13Array.indexOf(subArray[key][ean_13]) === -1) {
+                                                ean13Array.push(subArray[key][ean_13]);
+                                            }
+                                            else {
+                                                repeatedEan13Array.push(subArray[key][ean_13]);
+                                            }
+                                        }
+                                        else {
+                                            emptyEan13Array.push('empty');
+                                        }
+                                    }
+                                    if (nom != ""&& key1 == nom) {
+                                        if (subArray[key][nom] != "") {
+                                        }
+                                        else {
+                                            emptyNomArray.push('empty');
+                                        }
+                                        finalSubArray['nom'] = subArray[key][nom];
+                                    }
+                                    if (category != ""&& key1 == category) {
+                                        finalSubArray['category'] = subArray[key][category];
+                                    }
+                                    if (couleur != ""&& key1 == couleur) {
+                                        finalSubArray['couleur'] = subArray[key][couleur];
+                                    }
+                                    if (pied != ""&& key1 == pied) {
+                                        finalSubArray['pied'] = subArray[key][pied];
+                                    }
+                                }
+                            }
+                            finalArray.push(finalSubArray);
+                        }
+                    }
+                }
+            });
+
+            // console.log(repeatedCodeBBArray);
+            if(marque == ""){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            Erreur : pas de colonne MARQUE.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(codeB_B == ""){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             Erreur : pas de colonne CODE B&B.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(ean_13 == ""){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             Erreur : pas de colonne EAN 13.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(nom == ""){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             Erreur : pas de colonne NOM.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+//            console.log(repeatedCodeBBArray);
+//            console.log(repeatedEan13Array);
+            if(marqueArray.length > 1){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne marque possède plus d’une valeur.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(emptyMarqueArray.length > 0){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne marque n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(emptyCodeBBArray.length > 0){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             La colonne CODE B&B n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(repeatedCodeBBArray.length > 0){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             La colonne CODE B&B a des éléments égaux.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(emptyEan13Array.length > 0){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '             La colonne EAN 13 n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(repeatedEan13Array.length > 0){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne EAN 13 a des éléments égaux.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(emptyNomArray.length > 0){
+                errorHTML += ' <div class="container mt-20">' +
+                    '        <div class="alert alert-danger" role="alert">' +
+                    '            La colonne NOM n’est pas complète.' +
+                    '        </div>' +
+                    '    </div>';
+            }
+            if(nom != "" && marque != "" && codeB_B != "" && ean_13 != "" && marqueArray.length == 1 && emptyMarqueArray.length == 0 && emptyCodeBBArray.length == 0 && repeatedCodeBBArray.length == 0 && emptyEan13Array.length == 0 && repeatedEan13Array.length == 0){
+                localStorage.setItem("myDbName", myDbName);
+                createMyDatabase(myDbName,finalArray);
+
+                $('#errorMessages').html('');
+            }
+            else{
+                $('#errorMessages').html(errorHTML);
+                $('.bottomButtons').hide();
+            }
+            $('.loading').hide();
+        };
+        reader.readAsBinaryString(f);
+    }
+    function to_json(workbook) {
+        var result = {};
+        workbook.SheetNames.forEach(function(sheetName) {
+            var roa = XLS.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            if(roa.length > 0){
+                result[sheetName] = roa;
+            }
+        });
+        return result;
+    }
+
+    var db;
+
+    function indexedDBOk() {
+        return "indexedDB" in window;
+    }
+
+    function createMyDatabase(db_name,jsonData) {
+        //No support? Go in the corner and pout.
+        if(!indexedDBOk) return;
+
+        var openRequest = indexedDB.open(db_name,1);
+
+        openRequest.onupgradeneeded = function(e) {
+            var thisDB = e.target.result;
+
+            if(!thisDB.objectStoreNames.contains(db_name)) {
+                thisDB.createObjectStore(db_name);
+            }
+        };
+        openRequest.onsuccess = function(e) {
+            console.log("running onsuccess");
+
+            db = e.target.result;
+            var transaction = db.transaction([db_name],"readwrite");
+            var store = transaction.objectStore(db_name);
+
+            //Perform the add
+            var request = store.add(jsonData,1);
+
+            request.onerror = function(e) {
+                alert("Error",e.target.error.name);
+                //some type of error handler
+            };
+
+            request.onsuccess = function(e) {
+                console.log("Woot! Did it");
+                $('.bottomButtons').show();
+            };
+        };
+        openRequest.onerror = function(e) {
+            //Do something for the error
+        };
+    }
+</script>
+</body>
+</html>

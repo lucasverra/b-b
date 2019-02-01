@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sheet js</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.1/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/dropzone.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <center><h1>bench & berg</h1></center>
+    </div>
+</div>
+<div id="wrapper">
+
+    <div class="file-upload">
+        <div class="image-upload-wrap">
+
+            <input class="file-upload-input" type='file' id="input-excel" />
+                <i class="material-icons">cloud_upload</i>
+            <div class="drag-text">
+                <h3>Drag and drop a file or Click</h3>
+            </div>
+        </div>
+    </div>
+    <center><button type="button" id="filterTable" class="btn btn-default">Filter</button></center>
+    <table class="table table-bordered">
+        <thead id="theadHtml">
+
+        </thead>
+        <tbody id="tbodyHtml">
+
+        </tbody>
+    </table>
+</div>
+<script>
+    $('#input-excel').change(function(e) {
+        $('#filterTable').click(function () {
+            var reader = new FileReader();
+
+            window.indexedDB = window.indexedDB || window.mozIndexedDB ||
+                window.webkitIndexedDB || window.msIndexedDB;
+
+            //prefixes of window.IDB objects
+            window.IDBTransaction = window.IDBTransaction ||
+                window.webkitIDBTransaction || window.msIDBTransaction;
+            window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange ||
+                window.msIDBKeyRange
+
+            if (!window.indexedDB) {
+                window.alert("Your browser doesn't support a stable version of IndexedDB.")
+            }
+            var rABS = true;
+            var files = e.target.files;
+            var i, f;
+            for (i = 0; i != files.length; ++i) {
+                f = files[i];
+                var name = f.name;
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var workbook;
+                    if (rABS) {
+                        /* if binary string, read with type 'binary' */
+                        workbook = XLSX.read(data, {type: 'binary'});
+                    } else {
+                        /* if array buffer, convert to base64 */
+                        var arr = fixdata(data);
+                        workbook = XLSX.read(btoa(arr), {type: 'base64'});
+                    }
+                    var arrayOfData = to_json(workbook);
+                    var theadHtml = "";
+                    var tbodyHtml = "";
+                    $.each(arrayOfData, function (index, subArray) {
+                        for (var key in subArray) {
+                            if (key == 0) {
+                                theadHtml += "<tr>";
+                                for (var key1 in subArray[key]) {
+                                    theadHtml += '<th>' + key1 + '</th>';
+                                }
+                                theadHtml += "</tr>";
+                            }
+                            tbodyHtml += "<tr>";
+
+                            for (var key1 in subArray[key]) {
+                                tbodyHtml += '<td>' + subArray[key][key1] + '</td>';
+                            }
+                            tbodyHtml += "</tr>";
+
+                        }
+                    });
+                    $('#theadHtml').html(theadHtml);
+                    $('#tbodyHtml').html(tbodyHtml);
+                    /* DO SOMETHING WITH workbook HERE */
+                };
+                reader.readAsBinaryString(f);
+            }
+        });
+    });
+    function to_json(workbook) {
+        var result = {};
+        workbook.SheetNames.forEach(function(sheetName) {
+            var roa = XLS.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            if(roa.length > 0){
+                result[sheetName] = roa;
+            }
+        });
+        return result;
+    }
+
+
+</script>
+</body>
+</html>
