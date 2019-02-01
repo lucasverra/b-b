@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Filter | bench & berg</title>
+    <title>Export | bench & berg</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -48,46 +48,48 @@
 <script>
     $('.loading').show();
     var dbName=localStorage.getItem("myDbName");
-    var openRequest = indexedDB.open(dbName,1);
-    openRequest.onsuccess = function(e) {
-        console.log("running onsuccess");
+    if(dbName == ""){
+        alert('please upload a file again, its not having data in Indexdb to export.');
+    }
+    else{
+        var openRequest = indexedDB.open(dbName,1);
+        openRequest.onsuccess = function(e) {
+            console.log("running on success");
 
-        db = e.target.result;
-        var objectStore = db.transaction(dbName).objectStore(dbName);
+            db = e.target.result;
+            var objectStore = db.transaction(dbName).objectStore(dbName);
 
-        objectStore.openCursor().onsuccess = function(event) {
-            var cursor = event.target.result;
+            objectStore.openCursor().onsuccess = function(event) {
+                var cursor = event.target.result;
 
-            if (cursor) {
-                console.log(cursor);
-                var countOfRows=0;
-                $.each(cursor.value, function (index,subArray) {
-                    tbodyHtml+="<tr>";
-                    tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
-                    for (var key in subArray) {
-                        tbodyHtml += '<td>'+subArray[key]+'</td>';
-                    }
-                    tbodyHtml+="<td></td>";
-                    tbodyHtml+="</tr>";
-                    countOfRows++;
-                });
-                $('#tbodyHtml').html(tbodyHtml);
-                $('#bigText').html('Vous avez sélectionne <b>'+countOfRows+'</b> produits');
-                $('.bottomButtons').show();
-                $('.loading').hide();
-//                alert("Name for id " + cursor.key + " is " + cursor.value.name + ", Age: " + cursor.value.age + ", Email: " + cursor.value.email);
-                cursor.continue();
-            } else {
-//                alert("No more entries!");
-            }
-        };
+                if (cursor) {
+                    var countOfRows=0;
+                    $.each(cursor.value, function (index,subArray) {
+                        tbodyHtml+="<tr>";
+                        tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
+                        for (var key in subArray) {
+                            tbodyHtml += '<td>'+subArray[key]+'</td>';
+                        }
+                        tbodyHtml+="<td></td>";
+                        tbodyHtml+="</tr>";
+                        countOfRows++;
+                    });
+                    $('#tbodyHtml').html(tbodyHtml);
+                    $('#bigText').html('Vous avez sélectionne <b>'+countOfRows+'</b> produits');
+                    $('.bottomButtons').show();
+                    $('.loading').hide();
+                    cursor.continue();
+                } else {
+                }
+            };
+        }
     }
 </script>
 <script>
     function exportEXCEL() {
         var wb = XLSX.utils.table_to_book(document.getElementById('excel-table'), {sheet:"Sheet JS"});
         var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
-        saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'test.xlsx');
+        saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), dbName+'.xlsx');
     }
 
     function s2ab(s) {

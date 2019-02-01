@@ -11,14 +11,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.1/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/dropzone.js"></script>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .bg-green,.bg-green:hover{
-            background-color: #00C851;
-            color: white;
-            padding: 20px 40px;
-            margin: 25px;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -39,7 +31,7 @@
     <div class="file-upload">
         <div class="image-upload-wrap">
 
-            <input class="file-upload-input" type='file' id="input-excel" />
+            <input class="file-upload-input" type='text' id="input-excel" />
             <i class="material-icons">cloud_upload</i>
             <div class="drag-text">
                 <h3>Drag and drop a file or Click</h3>
@@ -49,49 +41,33 @@
     <div id="errorMessages"></div>
     <div class="bottomButtons text-center" style="display:none;">
         <center>
-            <button class="btn btn-flat btn-lg bg-green" onclick="processFile()">FICHIER TELECHARGE CLIQEZ POUR CONTINUER</button>
+            <a href="filter"><button class="btn btn-flat btn-lg bg-green">FICHIER TELECHARGE CLIQEZ POUR CONTINUER</button></a>
         </center>
     </div>
 </div>
-<!--<script src="js/parse_excel.js"></script>-->
 <script>
-    var fileForUpload="";
-    var myDropzone = new Dropzone(".file-upload-input",{
-
+    new Dropzone("#input-excel",{
         url: 'upload',
         uploadMultiple: false,
-
         init : function() {
-            myDropzone=this;
-            //Restore initial message when queue has been completed
-
-            // $('.loading').show();
-            myDropzone.on("drop", function(file) {
+            this.on("drop", function(file) {
                 $('.loading').show();
+                $('#errorMessages').html('');
             });
-
-            myDropzone.on("complete", function(file) {
-                $('.loading').hide();
-                fileForUpload=file;
-                $('.bottomButtons').show();
-
+            this.on("addedfile", function(file) {
+                $('.loading').show();
+                $('#errorMessages').html('');
             });
-            // $('.loading').hide();
+            this.on("complete", function(file) {
+                uploaded_excel(file);
+            });
         }
     });
-    function processFile() {
-        if(fileForUpload == ""){
-            alert('please select a file.');
-        }else{
-            uploaded_excel(fileForUpload);
-        }
-    }
     function uploaded_excel(file){
         $('.loading').show();
         var rABS = true;
         f=file;
         var reader = new FileReader();
-        var name = f.name;
         reader.onload = function(e) {
             var data = e.target.result;
             var workbook;
@@ -105,10 +81,6 @@
             }
 
             var arrayOfData=to_json(workbook);
-            console.log(arrayOfData);
-            var theadHtml="";
-            var tbodyHtml="";
-            console.log(arrayOfData);
             var myDbName=workbook.SheetNames[0];
             myDbName=myDbName.replace(/ /g,"_");
             var r = Math.random().toString(36).substring(7);
@@ -240,18 +212,12 @@
                 localStorage.setItem("myDbName", myDbName);
                 createMyDatabase(myDbName,finalArray);
 
-                $('#errorMessages').html('<div class="container mt-20">' +
-                    '                   <div class="alert alert-success" role="alert">' +
-                    '                    ' +
-                    '                    </div> ' +
-                    '                    </div>');
+                $('#errorMessages').html('');
             }
             else{
                 $('#errorMessages').html(errorHTML);
                 $('.bottomButtons').hide();
             }
-//
-
             $('.loading').hide();
         };
         reader.readAsBinaryString(f);
@@ -285,8 +251,7 @@
             if(!thisDB.objectStoreNames.contains(db_name)) {
                 thisDB.createObjectStore(db_name);
             }
-        }
-
+        };
         openRequest.onsuccess = function(e) {
             console.log("running onsuccess");
 
@@ -300,69 +265,16 @@
             request.onerror = function(e) {
                 alert("Error",e.target.error.name);
                 //some type of error handler
-            }
+            };
 
             request.onsuccess = function(e) {
                 console.log("Woot! Did it");
-                window.location.href='filter';
-            }
-            //Listen for add clicks
-//                document.querySelector("#addButton").addEventListener("click", addPerson, false);
-        }
-
+                $('.bottomButtons').show();
+            };
+        };
         openRequest.onerror = function(e) {
             //Do something for the error
-        }
-
-    }
-    //        document.addEventListener("DOMContentLoaded", function() {
-    //
-    //            //No support? Go in the corner and pout.
-    //            if(!indexedDBOk) return;
-    //
-    //            var openRequest = indexedDB.open("sheet_database1",1);
-    //
-    //            openRequest.onupgradeneeded = function(e) {
-    //                var thisDB = e.target.result;
-    //
-    //                if(!thisDB.objectStoreNames.contains("sheet_database1")) {
-    //                    thisDB.createObjectStore("sheet_database1");
-    //                }
-    //            }
-    //
-    //            openRequest.onsuccess = function(e) {
-    //                console.log("running onsuccess");
-    //
-    //                db = e.target.result;
-    //
-    //                //Listen for add clicks
-    ////                document.querySelector("#addButton").addEventListener("click", addPerson, false);
-    //            }
-    //
-    //            openRequest.onerror = function(e) {
-    //                //Do something for the error
-    //            }
-    //
-    //        },false);
-
-    function addPerson(jsonData,db_name) {
-
-        console.log("About to add ");
-
-        var transaction = db.transaction([db_name],"readwrite");
-        var store = transaction.objectStore(db_name);
-
-        //Perform the add
-        var request = store.add(jsonData,1);
-
-        request.onerror = function(e) {
-            console.log("Error",e.target.error.name);
-            //some type of error handler
-        }
-
-        request.onsuccess = function(e) {
-            console.log("Woot! Did it");
-        }
+        };
     }
 </script>
 </body>

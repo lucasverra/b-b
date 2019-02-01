@@ -44,37 +44,40 @@
 <script>
     $('.loading').show();
     var dbName=localStorage.getItem("myDbName");
-    var openRequest = indexedDB.open(dbName,1);
-    openRequest.onsuccess = function(e) {
-        console.log("running onsuccess");
+    if(dbName == ""){
+        alert('please upload a file again, its not having data in Indexdb to filter.');
+    }
+    else{
+        var openRequest = indexedDB.open(dbName,1);
+        openRequest.onsuccess = function(e) {
+            console.log("running onsuccess");
 
-        db = e.target.result;
-        var objectStore = db.transaction(dbName).objectStore(dbName);
+            db = e.target.result;
+            var objectStore = db.transaction(dbName).objectStore(dbName);
 
-        objectStore.openCursor().onsuccess = function(event) {
-            var cursor = event.target.result;
+            objectStore.openCursor().onsuccess = function(event) {
+                var cursor = event.target.result;
 
-            if (cursor) {
-                console.log(cursor);
-                var countOfRows=0;
-                $.each(cursor.value, function (index,subArray) {
-                    tbodyHtml+="<tr>";
-                    tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
-                    for (var key in subArray) {
+                if (cursor) {
+                    var countOfRows=0;
+                    $.each(cursor.value, function (index,subArray) {
+                        tbodyHtml+="<tr>";
+                        tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
+                        for (var key in subArray) {
                             tbodyHtml += '<td>'+subArray[key]+'</td>';
-                    }
-                    tbodyHtml+="<td></td>";
-                    tbodyHtml+="</tr>";
-                    countOfRows++;
-                });
-                $('#tbodyHtml').html(tbodyHtml);
-                $('.loading').hide();
-//                alert("Name for id " + cursor.key + " is " + cursor.value.name + ", Age: " + cursor.value.age + ", Email: " + cursor.value.email);
-                cursor.continue();
-            } else {
-//                alert("No more entries!");
-            }
-        };
+                        }
+                        tbodyHtml+="<td></td>";
+                        tbodyHtml+="</tr>";
+                        countOfRows++;
+                    });
+                    $('#tbodyHtml').html(tbodyHtml);
+                    $('.loading').hide();
+                    cursor.continue();
+                } else {
+                }
+            };
+        }
+
     }
 
 
