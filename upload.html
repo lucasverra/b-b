@@ -335,6 +335,7 @@
     }
 
     function createMyDatabase(db_name,jsonData) {
+        localStorage.setItem("myFilteredData", "");
         //No support? Go in the corner and pout.
         if(!indexedDBOk) return;
 
