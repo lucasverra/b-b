@@ -8,7 +8,41 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" ></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore.js" ></script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        table , th ,td
+        {
+            background: #F5F5F5;
+
+        }
+        td
+        {
+            border: 1px solid black;
+            border-collapse: unset;
+        }
+        table
+        {
+            border: 1px solid white;
+            border-collapse: unset;
+        }
+        #tbodyHtml > tr >td
+        {
+            border: 1px solid #dee2e6;
+            background: white;
+        }
+        .tableFixHead > .tableresult
+        {
+            background: white;
+            border-collapse: collapse;
+        }
+        .btn-filter{
+            margin: 2px;
+        }
+        .btn-active{
+            border: 2px solid black !important;
+        }
+    </style>
 </head>
 <body>
 <div class="loading">
@@ -16,11 +50,60 @@
         <span class="sr-only">Loading...</span>
     </div>
 </div>
-<div class="text-center">
+<div class="text-center" id="marqueName">
     <h1>bench <br>& berg</h1>
 </div>
+<div class="container-fluid" style="background: #adb5bd;">
+    <h5>First Selection</h5>
+    <div class="row">
+            <div class="col-md-2">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>MODELE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nomFilter"></tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">CATEGORIE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoryFilter"></tbody>
+                </table>
+
+            </div>
+            <div class="col-md-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">COULEUR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="couleurFilter"></tbody>
+                </table>
+            </div>
+            <div class="col-md-2">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>COULEUR PIEDS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="piedsFilter"></tbody>
+                </table>
+            </div>
+    </div>
+    <br>
+</div>
+
+
 <div class="tableFixHead mt-20">
-        <table class="table table-bordered">
+        <table class="table table-bordered tableresult">
             <thead id="theadHtml">
                 <tr>
                     <th>#</th>
@@ -38,53 +121,485 @@
 </div>
 <div class="bottomButtons text-center">
     <center>
+        <a href="upload"><button class="btn btn-flat btn-lg bg-orange">GO TO UPLOAD</button></a>
         <a href="export"><button class="btn btn-flat btn-lg bg-green">GO TO EXPORT</button></a>
     </center>
 </div>
+</body>
+</html>
+
 <script>
     $('.loading').show();
     var dbName=localStorage.getItem("myDbName");
+    var filteredDbName=localStorage.getItem("myFilteredData");
+
+    var db;
+    var db1;
+    var allData =[];
+    var filteredData =[];
+
+    var allColor =[];
+    var allCategory =[];
+    var allPied =[];
+    var allNom =[];
+
+    var filteredColor =[];
+    var filteredCategory =[];
+    var filteredPied =[];
+    var filteredNom =[];
+
     if(dbName == ""){
         alert('please upload a file again, its not having data in Indexdb to filter.');
     }
     else{
-        var openRequest = indexedDB.open(dbName,1);
+        if(filteredDbName != ""){
+            var openRequest1 = indexedDB.open(filteredDbName,1);
+            openRequest1.onsuccess = function(e) {
+                console.log("running onsuccess");
+
+                db1 = e.target.result;
+                if(db1.objectStoreNames.contains(filteredDbName)) {
+                    console.log("1111");
+                    var objectStore1 = db1.transaction(filteredDbName).objectStore(filteredDbName);
+
+                    objectStore1.openCursor().onsuccess = function(event) {
+                        console.log("2222");
+                        var cursor1 = event.target.result;
+
+                        if (cursor1) {
+                            console.log("3333");
+                            filteredData = cursor1.value;
+                        }
+                        else{
+                            console.log("4444");
+//                            filteredData = cursor.value;
+                        }
+                    }
+                }
+                else{
+                    console.log("5555");
+                }
+
+            };
+            var openRequest = indexedDB.open(dbName,1);
+            openRequest.onsuccess = function(e) {
+                console.log("running onsuccess");
+
+                db = e.target.result;
+                var objectStore = db.transaction(dbName).objectStore(dbName);
+
+                objectStore.openCursor().onsuccess = function(event) {
+                    var cursor = event.target.result;
+
+                    if (cursor) {
+
+                        allData = cursor.value;
+
+                        var unique_couleur=_.uniq(cursor.value, function(arrray) { return arrray.couleur; });
+                        var unique_category=_.uniq(cursor.value, function(arrray) { return arrray.category; });
+                        var unique_pied=_.uniq(cursor.value, function(arrray) { return arrray.pied; });
+                        var unique_nom=_.uniq(cursor.value, function(arrray) { return arrray.nom; });
+                        var marque=_.uniq(cursor.value, function(arrray) { return arrray.marque; });
+
+                        if(filteredData.length <= 0){
+                            filteredData = cursor.value;
+                            $.each(unique_couleur, function (index,couleur) {
+                                if(couleur.couleur != ""){
+                                    filteredColor.push(couleur.couleur);
+                                    allColor.push(couleur.couleur);
+                                }
+                            });
+
+                            $.each(unique_pied, function (index,pied) {
+                                if(pied.pied != ""){
+                                    filteredPied.push(pied.pied);
+                                    allPied.push(pied.pied);
+                                }
+                            });
+
+                            $.each(unique_category, function (index,category) {
+                                if(category.category != ""){
+                                    filteredCategory.push(category.category);
+                                    allCategory.push(category.category);
+                                }
+                            });
+
+                            $.each(unique_nom, function (index,nom) {
+                                if(nom.nom != ""){
+                                    filteredNom.push(nom.nom);
+                                    allNom.push(nom.nom);
+                                }
+                            });
+
+                            $.each(marque, function (index,marq) {
+                                if(marq.marque != "") {
+                                    $('#marqueName').html('<h1>' + marq.marque + '</h1>');
+                                }
+                            });
+                        }
+                        else{
+                            var unique_couleur_filtered=_.uniq(filteredData, function(arrray) { return arrray.couleur; });
+                            var unique_category_filtered=_.uniq(filteredData, function(arrray) { return arrray.category; });
+                            var unique_pied_filtered=_.uniq(filteredData, function(arrray) { return arrray.pied; });
+                            var unique_nom_filtered=_.uniq(filteredData, function(arrray) { return arrray.nom; });
+
+                            $.each(unique_couleur, function (index,couleur) {
+                                if(couleur.couleur != ""){
+                                    allColor.push(couleur.couleur);
+                                }
+                            });
+
+                            $.each(unique_couleur_filtered, function (index,couleur) {
+                                if(couleur.couleur != ""){
+                                    filteredColor.push(couleur.couleur);
+                                }
+                            });
+
+                            $.each(unique_pied, function (index,pied) {
+                                if(pied.pied != ""){
+                                    allPied.push(pied.pied);
+                                }
+                            });
+
+                            $.each(unique_pied_filtered, function (index,pied) {
+                                if(pied.pied != ""){
+                                    filteredPied.push(pied.pied);
+                                }
+                            });
+
+                            $.each(unique_category, function (index,category) {
+                                if(category.category != ""){
+                                    allCategory.push(category.category);
+                                }
+                            });
+                            $.each(unique_category_filtered, function (index,category) {
+                                if(category.category != ""){
+                                    filteredCategory.push(category.category);
+                                }
+                            });
+
+                            $.each(unique_nom, function (index,nom) {
+                                if(nom.nom != ""){
+                                    allNom.push(nom.nom);
+                                }
+                            });
+                            $.each(unique_nom_filtered, function (index,nom) {
+                                if(nom.nom != ""){
+                                    filteredNom.push(nom.nom);
+                                }
+                            });
+
+                            $.each(marque, function (index,marq) {
+                                if(marq.marque != "") {
+                                    $('#marqueName').html('<h1>' + marq.marque + '</h1>');
+                                }
+                            });
+                        }
+                        tableHtml();
+
+                        filterHtml();
+
+                        $('.loading').hide();
+                        cursor.continue();
+                    }
+                };
+            }
+        }
+        else{
+            filteredData = cursor.value;
+            var openRequest = indexedDB.open(dbName,1);
+            openRequest.onsuccess = function(e) {
+                console.log("running onsuccess");
+
+                db = e.target.result;
+                var objectStore = db.transaction(dbName).objectStore(dbName);
+
+                objectStore.openCursor().onsuccess = function(event) {
+                    var cursor = event.target.result;
+
+                    if (cursor) {
+
+                        allData = cursor.value;
+
+                        var unique_couleur=_.uniq(cursor.value, function(arrray) { return arrray.couleur; });
+                        var unique_category=_.uniq(cursor.value, function(arrray) { return arrray.category; });
+                        var unique_pied=_.uniq(cursor.value, function(arrray) { return arrray.pied; });
+                        var unique_nom=_.uniq(cursor.value, function(arrray) { return arrray.nom; });
+                        var marque=_.uniq(cursor.value, function(arrray) { return arrray.marque; });
+
+                        $.each(unique_couleur, function (index,couleur) {
+                            if(couleur.couleur != ""){
+                                filteredColor.push(couleur.couleur);
+                                allColor.push(couleur.couleur);
+                            }
+                        });
+
+                        $.each(unique_pied, function (index,pied) {
+                            if(pied.pied != ""){
+                                filteredPied.push(pied.pied);
+                                allPied.push(pied.pied);
+                            }
+                        });
+
+                        $.each(unique_category, function (index,category) {
+                            if(category.category != ""){
+                                filteredCategory.push(category.category);
+                                allCategory.push(category.category);
+                            }
+                        });
+
+                        $.each(unique_nom, function (index,nom) {
+                            if(nom.nom != ""){
+                                filteredNom.push(nom.nom);
+                                allNom.push(nom.nom);
+                            }
+                        });
+
+                        $.each(marque, function (index,marq) {
+                            if(marq.marque != "") {
+                                $('#marqueName').html('<h1>' + marq.marque + '</h1>');
+                            }
+                        });
+                        filterHtml();
+                        var tbodyHtml = "";
+                        $.each(filteredData, function (index,subArray) {
+                            tbodyHtml+="<tr>";
+                            tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
+                            tbodyHtml += '<td>'+subArray['code_b_b']+'</td>';
+                            tbodyHtml += '<td>'+subArray['nom']+'</td>';
+                            tbodyHtml += '<td>'+subArray['category']+'</td>';
+                            tbodyHtml += '<td>'+subArray['couleur']+'</td>';
+                            tbodyHtml += '<td>'+subArray['pied']+'</td>';
+                            tbodyHtml+="</tr>";
+                        });
+                        $('#tbodyHtml').html(tbodyHtml);
+                        $('.loading').hide();
+                        cursor.continue();
+                    } else {
+                    }
+                };
+            }
+        }
+    }
+    function filterHtml() {
+        console.log('88888888888888');
+        var htmlColor = "";
+        console.log(allColor);
+        console.log(filteredColor);
+        $.each(allColor, function (index,couleur) {
+            if(couleur != ""){
+                if (filteredColor.indexOf(couleur) === -1) {
+//                    var isContainColor = _.filter(filteredData, function(item) {
+//                        return item.couleur == couleur
+//                    });
+//                    if(isContainColor.length <= 0){
+//                        htmlColor+= '<button class="btn btn-info btn-filter" disabled data-filter-type="color" data-filter-value="'+couleur+'">'+couleur+'</button>';
+//                    }
+//                    else {
+                        htmlColor += '<button class="btn btn-primary btn-filter" data-filter-type="color" data-filter-value="' + couleur + '">' + couleur + '</button>';
+//                    }
+                }
+                else{
+                    htmlColor+= '<button class="btn btn-success btn-filter btn-active" data-filter-type="color" data-filter-value="'+couleur+'">'+couleur+'</button>';
+                }
+            }
+        });
+        $('#couleurFilter').html(htmlColor);
+
+        var piedHtml="";
+        $.each(allPied, function (index,pied) {
+            if(pied != ""){
+                if (filteredPied.indexOf(pied) === -1) {
+//                    var isContainPied = _.filter(filteredData, function(item) {
+//                        return item.pied == pied
+//                    });
+//                    if(isContainPied.length <= 0){
+//                        piedHtml+= '<button class="btn btn-info btn-filter" disabled data-filter-type="pied" data-filter-value="'+pied+'">'+pied+'</button>';
+//                    }
+//                    else {
+                        piedHtml += '<button class="btn btn-primary btn-filter" data-filter-type="pied" data-filter-value="' + pied + '">' + pied + '</button>';
+//                    }
+                }
+                else{
+                    piedHtml+= '<button class="btn btn-success btn-filter btn-active" data-filter-type="pied" data-filter-value="'+pied+'">'+pied+'</button>';
+                }
+            }
+        });
+        $('#piedsFilter').html(piedHtml);
+
+        var categoryHtml="";
+        $.each(allCategory, function (index,category) {
+            if(category != ""){
+                if (filteredCategory.indexOf(category) === -1) {
+//                    var isContainCategory = _.filter(filteredData, function(item) {
+//                        return item.category == category
+//                    });
+//                    if(isContainCategory.length <= 0){
+//                        categoryHtml+= '<button class="btn btn-info btn-filter" disabled data-filter-type="category" data-filter-value="'+category+'">'+category+'</button>';
+//                    }
+//                    else {
+                        categoryHtml += '<button class="btn btn-primary btn-filter" data-filter-type="category" data-filter-value="' + category + '">' + category + '</button>';
+//                    }
+                }
+                else{
+                    categoryHtml+= '<button class="btn btn-success btn-filter btn-active" data-filter-type="category" data-filter-value="'+category+'">'+category+'</button>';
+                }
+            }
+        });
+        $('#categoryFilter').html(categoryHtml);
+
+        var nomHtml="";
+        $.each(allNom, function (index,nom) {
+            if(nom != ""){
+                if (filteredNom.indexOf(nom) === -1) {
+//                    var isContainNom = _.filter(filteredData, function(item) {
+//                        return item.nom == nom
+//                    });
+//                    if(isContainNom.length <=  0){
+//                        nomHtml+= '<button class="btn btn-info btn-filter" disabled data-filter-type="nom" data-filter-value="'+nom+'">'+nom+'</button>';
+//                    }
+//                    else {
+                        nomHtml += '<button class="btn btn-primary btn-filter" data-filter-type="nom" data-filter-value="' + nom + '">' + nom + '</button>';
+//                    }
+                }
+                else{
+                    nomHtml += '<button class="btn btn-success btn-filter btn-active" data-filter-type="nom" data-filter-value="'+nom+'">'+nom+'</button>';
+                }
+            }
+        });
+        $('#nomFilter').html(nomHtml);
+    }
+
+    function tableHtml() {
+        var myDbName='myFilteredData';
+        var r = Math.random().toString(36).substring(7);
+        myDbName=myDbName+'-'+r;
+        localStorage.setItem("myFilteredData", myDbName);
+        createMyDatabase(myDbName,filteredData);
+
+//        console.log(filteredData);
+        var tbodyHtml = "";
+        $.each(filteredData, function (index,subArray) {
+            tbodyHtml+="<tr>";
+            tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
+            tbodyHtml += '<td>'+subArray['code_b_b']+'</td>';
+            tbodyHtml += '<td>'+subArray['nom']+'</td>';
+            tbodyHtml += '<td>'+subArray['category']+'</td>';
+            tbodyHtml += '<td>'+subArray['couleur']+'</td>';
+            tbodyHtml += '<td>'+subArray['pied']+'</td>';
+            tbodyHtml+="</tr>";
+        });
+        $('#tbodyHtml').html(tbodyHtml);
+    }
+
+    $(document).on('click','.btn-filter',function () {
+        var filterType = $(this).attr('data-filter-type');
+        var filterVal = $(this).attr('data-filter-value');
+        if($(this).hasClass('btn-active')){
+            if(filterType == "color"){
+                filteredColor.pop(filterVal);
+                filteredData = _.filter(filteredData, function(item) {
+                    return item.couleur != filterVal
+                });
+            }
+            if(filterType == "pied"){
+                filteredPied.pop(filterVal);
+                filteredData = _.filter(filteredData, function(item) {
+                    return item.pied != filterVal
+                });
+            }
+            if(filterType == "category"){
+                filteredCategory.pop(filterVal);
+                filteredData = _.filter(filteredData, function(item) {
+                    return item.category != filterVal
+                });
+            }
+            if(filterType == "nom"){
+                filteredNom.pop(filterVal);
+                filteredData = _.filter(filteredData, function(item) {
+                    return item.nom != filterVal
+                });
+            }
+            $(this).removeClass('btn-active');
+            $(this).removeClass('btn-success');
+            $(this).addClass('btn-primary');
+            console.log('555555');
+    }
+        else{
+            if(filterType == "color"){
+                filteredColor.push(filterVal);
+                filteredData = _.union(filteredData,_.filter(allData, function(item) {
+                        return item.couleur == filterVal;
+                }));
+            }
+            if(filterType == "pied"){
+                filteredPied.push(filterVal);
+                filteredData = _.union(filteredData,_.filter(allData, function(item) {
+                    return item.pied == filterVal
+                }));
+            }
+            if(filterType == "category"){
+                filteredCategory.push(filterVal);
+                filteredData = _.union(filteredData,_.filter(allData, function(item) {
+                    return item.category == filterVal
+                }));
+            }
+            if(filterType == "nom"){
+                filteredNom.push(filterVal);
+                filteredData = _.union(filteredData,_.filter(allData, function(item) {
+                    return item.nom == filterVal
+                }));
+            }
+            $(this).addClass('btn-active');
+            $(this).removeClass('btn-primary');
+            $(this).addClass('btn-success');
+        }
+        tableHtml();
+//        filterHtml();
+    });
+
+    var db;
+
+    function indexedDBOk() {
+        return "indexedDB" in window;
+    }
+
+    function createMyDatabase(db_name,jsonData) {
+        console.log(db_name);
+        //No support? Go in the corner and pout.
+        if(!indexedDBOk) return;
+
+        var openRequest = indexedDB.open(db_name,1);
+
+        openRequest.onupgradeneeded = function(e) {
+            var thisDB = e.target.result;
+
+            if(!thisDB.objectStoreNames.contains(db_name)) {
+                thisDB.createObjectStore(db_name);
+            }
+        };
         openRequest.onsuccess = function(e) {
             console.log("running onsuccess");
 
             db = e.target.result;
-            var objectStore = db.transaction(dbName).objectStore(dbName);
+            var transaction = db.transaction([db_name],"readwrite");
+            var store = transaction.objectStore(db_name);
 
-            objectStore.openCursor().onsuccess = function(event) {
-                var cursor = event.target.result;
+            //Perform the add
+            var request = store.add(jsonData,1);
 
-                if (cursor) {
-                    var countOfRows=0;
-                    console.log(cursor.value);
-                    $.each(cursor.value, function (index,subArray) {
-                        tbodyHtml+="<tr>";
-                        tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
-                        // for (var key in subArray) {
-                                tbodyHtml += '<td>'+subArray['code_b_b']+'</td>';
-                                tbodyHtml += '<td>'+subArray['nom']+'</td>';
-                                tbodyHtml += '<td>'+subArray['category']+'</td>';
-                                tbodyHtml += '<td>'+subArray['couleur']+'</td>';
-                                tbodyHtml += '<td>'+subArray['pied']+'</td>';
-                        // }
-                        tbodyHtml+="</tr>";
-                        countOfRows++;
-                    });
-                    $('#tbodyHtml').html(tbodyHtml);
-                    $('.loading').hide();
-                    cursor.continue();
-                } else {
-                }
+            request.onerror = function(e) {
+                alert("Error",e.target.error.name);
+                //some type of error handler
             };
-        }
 
+            request.onsuccess = function(e) {
+                console.log("Woot! Did it");
+                $('.bottomButtons').show();
+            };
+        };
+        openRequest.onerror = function(e) {
+            //Do something for the error
+        };
     }
-
-
 </script>
-</body>
-</html>
