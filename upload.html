@@ -81,7 +81,7 @@
             }
 
             var arrayOfData=to_json(workbook);
-            // console.log(arrayOfData);
+             console.log(arrayOfData);
             var myDbName=workbook.SheetNames[0];
             myDbName=myDbName.replace(/ /g,"_");
             var r = Math.random().toString(36).substring(7);
@@ -105,6 +105,7 @@
             var couleur="";
             var category="";
             var pied="";
+            var tissu="";
 
             // console.log(arrayOfData);
             var sheetCount=0;
@@ -141,6 +142,9 @@
                                 if (currentVal == "pieds" || currentVal == "PIEDS") {
                                     pied = key1;
                                 }
+                                if (currentVal == "tissu" || currentVal == "TISSU") {
+                                    tissu = key1;
+                                }
                             }
                         }
                         else {
@@ -150,6 +154,7 @@
                             finalSubArray['category'] = "";
                             finalSubArray['couleur'] = "";
                             finalSubArray['pied'] = "";
+                            finalSubArray['tissu'] = "";
                             for (var key1 in subArray[key]) {
                                 if(key != 0) {
                                     if (marque != "" && key1 == marque) {
@@ -161,10 +166,9 @@
                                         else {
                                             emptyMarqueArray.push('empty');
                                         }
+                                        finalSubArray['marque'] = subArray[key][marque];
                                     }
                                     if (codeB_B != ""&& key1 == codeB_B) {
-                                        // console.log(subArray[key]);
-                                        // console.log(subArray[key][codeB_B]);
                                         if (subArray[key][codeB_B] != "") {
                                             if (codeBBArray.indexOf(subArray[key][codeB_B]) === -1) {
                                                 codeBBArray.push(subArray[key][codeB_B]);
@@ -207,6 +211,9 @@
                                     }
                                     if (pied != ""&& key1 == pied) {
                                         finalSubArray['pied'] = subArray[key][pied];
+                                    }
+                                    if (tissu != ""&& key1 == tissu) {
+                                        finalSubArray['tissu'] = subArray[key][tissu];
                                     }
                                 }
                             }
