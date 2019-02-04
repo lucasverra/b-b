@@ -47,7 +47,9 @@
 </div>
 <script>
     $('.loading').show();
-    var dbName=localStorage.getItem("myDbName");
+    var dbName=localStorage.getItem("myFilteredData");
+    console.log('----------------------------------------------');
+    console.log(dbName);
     if(dbName == ""){
         alert('please upload a file again, its not having data in Indexdb to export.');
     }
