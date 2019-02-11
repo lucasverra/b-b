@@ -6,41 +6,75 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" ></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        table , th ,td
-        {
+        table, th, td {
             background: #F5F5F5;
 
         }
-        td
-        {
+
+        td {
             border: 1px solid black;
             border-collapse: unset;
         }
-        table
-        {
+
+        table {
             border: 1px solid white;
             border-collapse: unset;
         }
-        #tbodyHtml > tr >td
-        {
+
+        #tbodyHtml > tr > td {
             border: 1px solid #dee2e6;
             background: white;
         }
-        .tableFixHead > .tableresult
-        {
+
+        .tableFixHead > .tableresult {
             background: white;
             border-collapse: collapse;
         }
-        .btn-filter{
+
+        .btn-filter {
             margin: 2px;
         }
-        .btn-active{
+
+        .btn-active {
             /*border: 2px solid black !important;*/
+        }
+    </style>
+    <style>
+        .div {
+            border: 1px solid black;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .title {
+            width: 127px;
+            margin-top: -20px;
+            margin-left: 5px;
+            background: white;
+            text-align: center;
+        }
+
+        .mainBlock {
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .unselectedBlock {
+            border: 1px solid deepskyblue;
+            padding: 20px;
+        }
+
+        .selectedBlockContainer {
+            border: 1px solid green;
+            padding: 20px;
+        }
+        .selectedBlock{
+            padding: 20px;
         }
     </style>
 </head>
@@ -53,76 +87,82 @@
 <div class="text-center" id="marqueName">
     <h1>bench <br>& berg</h1>
 </div>
-<div class="container-fluid" style="background: #adb5bd;">
+<div class="row mainBlock">
+
+</div>
+<div class="container-fluid" style="background: #adb5bd;display:none;">
     <h5>First Selection</h5>
     <div class="row">
-            <div class="col-md-2">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>MODELE</th>
-                        </tr>
-                    </thead>
-                    <tbody id="nomFilter"></tbody>
-                </table>
-            </div>
-            <div class="col-md-4">
-                <table>
-                    <thead>
-                        <tr>
-                            <th colspan="2">CATEGORIE</th>
-                        </tr>
-                    </thead>
-                    <tbody id="categoryFilter"></tbody>
-                </table>
+        <div class="col-md-2">
+            <table>
+                <thead>
+                <tr>
+                    <th>MODELE</th>
+                </tr>
+                </thead>
+                <tbody id="nomFilter"></tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <table>
+                <thead>
+                <tr>
+                    <th colspan="2">CATEGORIE</th>
+                </tr>
+                </thead>
+                <tbody id="categoryFilter"></tbody>
+            </table>
 
-            </div>
-            <div class="col-md-4">
-                <table>
-                    <thead>
-                        <tr>
-                            <th colspan="2">COULEUR</th>
-                        </tr>
-                    </thead>
-                    <tbody id="couleurFilter"></tbody>
-                </table>
-            </div>
-            <div class="col-md-2">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>COULEUR PIEDS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="piedsFilter"></tbody>
-                </table>
-            </div>
+        </div>
+        <div class="col-md-4">
+            <table>
+                <thead>
+                <tr>
+                    <th colspan="2">COULEUR</th>
+                </tr>
+                </thead>
+                <tbody id="couleurFilter"></tbody>
+            </table>
+        </div>
+        <div class="col-md-2">
+            <table>
+                <thead>
+                <tr>
+                    <th>COULEUR PIEDS</th>
+                </tr>
+                </thead>
+                <tbody id="piedsFilter"></tbody>
+            </table>
+        </div>
     </div>
     <br>
 </div>
 
+<div class="tableFixHead mt-20 hidden">
+    <table class="table table-bordered tableresult">
+        <thead id="theadHtml">
+        <tr>
+            <th>#</th>
+            <th>CODE B&B</th>
+            <th>NOM</th>
+            <th>CATEGORIE</th>
+            <th>COULEUR</th>
+            <th>PIEDS</th>
+        </tr>
+        </thead>
+        <tbody id="tbodyHtml">
 
-<div class="tableFixHead mt-20">
-        <table class="table table-bordered tableresult">
-            <thead id="theadHtml">
-                <tr>
-                    <th>#</th>
-                    <th>CODE B&B</th>
-                    <th>NOM</th>
-                    <th>CATEGORIE</th>
-                    <th>COULEUR</th>
-                    <th>PIEDS</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyHtml">
-
-            </tbody>
-        </table>
+        </tbody>
+    </table>
 </div>
 <div class="bottomButtons text-center">
     <center>
-        <a href="upload"><button class="btn btn-flat btn-lg bg-orange">GO TO UPLOAD</button></a>
-        <a href="export"><button class="btn btn-flat btn-lg bg-green">GO TO EXPORT</button></a>
+        <a href="upload">
+            <button class="btn btn-flat btn-lg bg-orange">GO TO UPLOAD</button>
+        </a>
+        <a href="export">
+            <button class="btn btn-flat btn-lg bg-green">GO TO EXPORT</button>
+        </a>
     </center>
 </div>
 </body>
@@ -130,309 +170,305 @@
 
 <script>
     $('.loading').show();
-    var dbName=localStorage.getItem("myDbName");
-    var filteredDbName=localStorage.getItem("myFilteredData");
+    var dbName = localStorage.getItem("myDbName");
+    var filteredDbName = localStorage.getItem("myFilteredData");
 
     var db;
     var db1;
-    var allData =[];
-    var filteredData =[];
+    var allData = [];
+    var filteredData = [];
 
-    var allColor =[];
-    var allCategory =[];
-    var allPied =[];
-    var allNom =[];
+    var allColor = [];
+    var allCategory = [];
+    var allPied = [];
+    var allNom = [];
 
-    var filteredColor =[];
-    var filteredCategory =[];
-    var filteredPied =[];
-    var filteredNom =[];
+    var filteredColor = [];
+    var filteredCategory = [];
+    var filteredPied = [];
+    var filteredNom = [];
+//    =================================
+    var fd = [];
 
-    if(dbName == ""){
+    if (dbName == "") {
         alert('please upload a file again, its not having data in Indexdb to filter.');
     }
-    else{
-        if(filteredDbName != ""){
-            var openRequest1 = indexedDB.open(filteredDbName,1);
-            openRequest1.onsuccess = function(e) {
-                console.log("running onsuccess");
+    else {
 
-                db1 = e.target.result;
-                if(db1.objectStoreNames.contains(filteredDbName)) {
-                    console.log("1111");
-                    var objectStore1 = db1.transaction(filteredDbName).objectStore(filteredDbName);
-
-                    objectStore1.openCursor().onsuccess = function(event) {
-                        console.log("2222");
-                        var cursor1 = event.target.result;
-
-                        if (cursor1) {
-                            console.log("3333");
-                            filteredData = cursor1.value;
-                        }
-                        else{
-                            console.log("4444");
-//                            filteredData = cursor.value;
-                        }
-                    }
-                }
-                else{
-                    console.log("5555");
-                }
-
-            };
-            var openRequest = indexedDB.open(dbName,1);
-            openRequest.onsuccess = function(e) {
+            var openRequest = indexedDB.open(dbName, 1);
+            openRequest.onsuccess = function (e) {
                 console.log("running onsuccess");
 
                 db = e.target.result;
                 var objectStore = db.transaction(dbName).objectStore(dbName);
 
-                objectStore.openCursor().onsuccess = function(event) {
+                objectStore.openCursor().onsuccess = function (event) {
                     var cursor = event.target.result;
 
                     if (cursor) {
-
                         allData = cursor.value;
+                        filteredData = allData;
 
-                        var unique_couleur=_.uniq(cursor.value, function(arrray) { return arrray.couleur.trim(); });
-                        var unique_category=_.uniq(cursor.value, function(arrray) { return arrray.category.trim(); });
-                        var unique_pied=_.uniq(cursor.value, function(arrray) { return arrray.pied.trim(); });
-                        var unique_nom=_.uniq(cursor.value, function(arrray) { return arrray.nom.trim(); });
-                        var marque=_.uniq(cursor.value, function(arrray) { return arrray.marque.trim(); });
-
-                        if(filteredData.length <= 0){
-                            filteredData = cursor.value;
-                            $.each(unique_couleur, function (index,couleur) {
-                                if(couleur.couleur != ""){
-                                    filteredColor.push(couleur.couleur);
-                                    allColor.push(couleur.couleur);
-                                }
-                            });
-
-                            $.each(unique_pied, function (index,pied) {
-                                if(pied.pied != ""){
-                                    filteredPied.push(pied.pied);
-                                    allPied.push(pied.pied);
-                                }
-                            });
-
-                            $.each(unique_category, function (index,category) {
-                                if(category.category != ""){
-                                    filteredCategory.push(category.category);
-                                    allCategory.push(category.category);
-                                }
-                            });
-
-                            $.each(unique_nom, function (index,nom) {
-                                if(nom.nom != ""){
-                                    filteredNom.push(nom.nom);
-                                    allNom.push(nom.nom);
-                                }
-                            });
-
-                            $.each(marque, function (index,marq) {
-                                if(marq.marque != "") {
-                                    $('#marqueName').html('<h1>' + marq.marque + '</h1>');
-                                }
-                            });
-                        }
-                        else{
-                            var unique_couleur_filtered=_.uniq(filteredData, function(arrray) { return arrray.couleur.trim(); });
-                            var unique_category_filtered=_.uniq(filteredData, function(arrray) { return arrray.category.trim(); });
-                            var unique_pied_filtered=_.uniq(filteredData, function(arrray) { return arrray.pied.trim(); });
-                            var unique_nom_filtered=_.uniq(filteredData, function(arrray) { return arrray.nom.trim(); });
-
-                            $.each(unique_couleur, function (index,couleur) {
-                                if(couleur.couleur != ""){
-                                    allColor.push(couleur.couleur);
-                                }
-                            });
-
-                            $.each(unique_couleur_filtered, function (index,couleur) {
-                                if(couleur.couleur != ""){
-                                    filteredColor.push(couleur.couleur);
-                                }
-                            });
-
-                            $.each(unique_pied, function (index,pied) {
-                                if(pied.pied != ""){
-                                    allPied.push(pied.pied);
-                                }
-                            });
-
-                            $.each(unique_pied_filtered, function (index,pied) {
-                                if(pied.pied != ""){
-                                    filteredPied.push(pied.pied);
-                                }
-                            });
-
-                            $.each(unique_category, function (index,category) {
-                                if(category.category != ""){
-                                    allCategory.push(category.category);
-                                }
-                            });
-                            $.each(unique_category_filtered, function (index,category) {
-                                if(category.category != ""){
-                                    filteredCategory.push(category.category);
-                                }
-                            });
-
-                            $.each(unique_nom, function (index,nom) {
-                                if(nom.nom != ""){
-                                    allNom.push(nom.nom);
-                                }
-                            });
-                            $.each(unique_nom_filtered, function (index,nom) {
-                                if(nom.nom != ""){
-                                    filteredNom.push(nom.nom);
-                                }
-                            });
-
-                            $.each(marque, function (index,marq) {
-                                if(marq.marque != "") {
-                                    $('#marqueName').html('<h1>' + marq.marque + '</h1>');
-                                }
-                            });
-                        }
-                        tableHtml();
-
-                        filterHtml();
-
-                        $('.loading').hide();
-                        cursor.continue();
-                    }
-                };
-            }
-        }
-        else{
-
-            var openRequest = indexedDB.open(dbName,1);
-            openRequest.onsuccess = function(e) {
-                console.log("running onsuccess");
-
-                db = e.target.result;
-                var objectStore = db.transaction(dbName).objectStore(dbName);
-
-                objectStore.openCursor().onsuccess = function(event) {
-                    var cursor = event.target.result;
-
-                    if (cursor) {
-                        filteredData = cursor.value;
-
-                        allData = cursor.value;
-
-                        var unique_couleur=_.uniq(cursor.value, function(arrray) { return arrray.couleur.trim(); });
-                        var unique_category=_.uniq(cursor.value, function(arrray) { return arrray.category.trim(); });
-                        var unique_pied=_.uniq(cursor.value, function(arrray) { return arrray.pied.trim(); });
-                        var unique_nom=_.uniq(cursor.value, function(arrray) { return arrray.nom.trim(); });
-                        var marque=_.uniq(cursor.value, function(arrray) { return arrray.marque.trim(); });
-
-                        $.each(unique_couleur, function (index,couleur) {
-                            if(couleur.couleur != ""){
-                                filteredColor.push(couleur.couleur);
-                                allColor.push(couleur.couleur);
-                            }
+                        allNom = _.uniq(allData, function (arrray) {
+                            return arrray.nom.trim();
                         });
-
-                        $.each(unique_pied, function (index,pied) {
-                            if(pied.pied != ""){
-                                filteredPied.push(pied.pied);
-                                allPied.push(pied.pied);
-                            }
+                        marque = _.uniq(allData, function (arrray) {
+                            return arrray.marque.trim();
                         });
+                        $.each(allNom, function (index,nom1){
+                            var nom= nom1.nom;
+                            fd[nom] = [];
+                            fd[nom]['allData']          = _.where(allData, {nom: nom});
+                            fd[nom]['allColorLin']      = [];
+                            fd[nom]['allColorVelour']   = [];
+                            fd[nom]['allPied']          = [];
+                            fd[nom]['allCategory']      = [];
+                            fd[nom]['allDataCount']     = _.size(_.where(allData, {nom: nom}));
 
-                        $.each(unique_category, function (index,category) {
-                            if(category.category != ""){
-                                filteredCategory.push(category.category);
-                                allCategory.push(category.category);
-                            }
+                            fd[nom]['allColorLin'] = _.uniq(_.where(allData, {nom: nom, tissu: 'Toucher lin'}), function (arrray) {
+                                return arrray.couleur.trim();
+                            });
+                            fd[nom]['allColorVelour'] = _.uniq(_.where(allData,  {nom: nom, tissu: 'Toucher velours'}), function (arrray) {
+                                return arrray.couleur.trim();
+                            });
+                            fd[nom]['allPied'] = _.uniq(_.where(allData, {nom: nom}), function (arrray) {
+                                return arrray.pied.trim();
+                            });
+                            fd[nom]['allCategory'] = _.uniq(_.where(allData, {nom: nom}), function (arrray) {
+                                return arrray.category.trim();
+                            });
+
+                            fd[nom]['sfilteredData']        = [];
+                            fd[nom]['sfilteredColorLin']    = [];
+                            fd[nom]['sfilteredColorVelour'] = [];
+                            fd[nom]['sfilteredPied']        = [];
+                            fd[nom]['sfilteredCategory']    = [];
+                            fd[nom]['sfilteredDataCount']   = 0;
+                            fd[nom]['ufilteredData']        = fd[nom]['allData'];
+                            fd[nom]['ufilteredColorLin']    = fd[nom]['allColorLin'];
+                            fd[nom]['ufilteredColorVelour'] = fd[nom]['allColorVelour'];
+                            fd[nom]['ufilteredPied']        = fd[nom]['allPied'];
+                            fd[nom]['ufilteredCategory']    = fd[nom]['allCategory'];
+                            fd[nom]['ufilteredDataCount']   = fd[nom]['allDataCount'];
+
                         });
-
-                        $.each(unique_nom, function (index,nom) {
-                            if(nom.nom != ""){
-                                filteredNom.push(nom.nom);
-                                allNom.push(nom.nom);
-                            }
-                        });
-
-                        $.each(marque, function (index,marq) {
-                            if(marq.marque != "") {
+                        $.each(marque, function (index, marq) {
+                            if (marq.marque != "") {
                                 $('#marqueName').html('<h1>' + marq.marque + '</h1>');
                             }
                         });
                         filterHtml();
                         tableHtml();
-//                        var tbodyHtml = "";
-//                        $.each(filteredData, function (index,subArray) {
-//                            tbodyHtml+="<tr>";
-//                            tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
-//                            tbodyHtml += '<td>'+subArray['code_b_b']+'</td>';
-//                            tbodyHtml += '<td>'+subArray['nom']+'</td>';
-//                            tbodyHtml += '<td>'+subArray['category']+'</td>';
-//                            tbodyHtml += '<td>'+subArray['couleur']+'</td>';
-//                            tbodyHtml += '<td>'+subArray['pied']+'</td>';
-//                            tbodyHtml+="</tr>";
-//                        });
-//                        $('#tbodyHtml').html(tbodyHtml);
                         $('.loading').hide();
                         cursor.continue();
                     } else {
                     }
                 };
             }
-        }
     }
     function filterHtml() {
-        var htmlColor = "";
-        console.log(allColor);
-        console.log(filteredColor);
-        $.each(allColor, function (index,couleur) {
-            if(couleur != ""){
-                if (filteredColor.indexOf(couleur) === -1) {
-                        htmlColor += '<button class="btn btn-secondary btn-filter" data-filter-type="color" data-filter-value="' + couleur + '">' + couleur + '</button>';
+        var html='';
+
+        $.each(allNom, function (index,nom1){
+            var linHtml = '';
+            var veloursHtml = '';
+            var piedsHtml = '';
+            var categoryHtml = '';
+            var linHtml1 = '';
+            var veloursHtml1 = '';
+            var piedsHtml1 = '';
+            var categoryHtml1 = '';
+            var nom = nom1.nom;
+            var ucount = fd[nom]['ufilteredDataCount'];
+            var scount = fd[nom]['sfilteredDataCount'];
+
+
+            $.each(fd[nom]['allColorLin'], function (index, data) {
+                if(data.couleur != "") {
+                    if(_.size(_.where(fd[nom]['ufilteredColorLin'], data)) > 0){
+                        linHtml += '<button class="btn btn-primary btn-filter btn-unselected" data-filter-type="colorLin" data-filter-nom="'+data.nom+'"  data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
+                    else{
+                        linHtml += '<button class="btn btn-secondary btn-filter btn-unselected" data-filter-type="colorLin" data-filter-nom="'+data.nom+'"  data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
+                    if(_.size(_.where(fd[nom]['sfilteredColorLin'], data)) > 0){
+                        linHtml1 += '<button class="btn btn-primary btn-filter btn-selected" data-filter-type="colorLin" data-filter-nom="'+data.nom+'"  data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
+                    else{
+                        linHtml1 += '<button class="btn btn-secondary btn-filter btn-selected" data-filter-type="colorLin" data-filter-nom="'+data.nom+'"  data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
                 }
-                else{
-                    htmlColor+= '<button class="btn btn-primary btn-filter btn-active" data-filter-type="color" data-filter-value="'+couleur+'">'+couleur+'</button>';
+            });
+            $.each(fd[nom]['allColorVelour'], function (index, data) {
+                if(data.couleur != ""){
+                    if(_.size(_.where(fd[nom]['ufilteredColorVelour'], data)) > 0){
+                        veloursHtml += '<button class="btn btn-primary btn-filter btn-unselected" data-filter-type="colorVelour" data-filter-nom="'+data.nom+'" data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
+                    else{
+                        veloursHtml += '<button class="btn btn-secondary btn-filter btn-unselected" data-filter-type="colorVelour" data-filter-nom="'+data.nom+'" data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
+                    if(_.size(_.where(fd[nom]['sfilteredColorVelour'], data)) > 0){
+                        veloursHtml1 += '<button class="btn btn-primary btn-filter btn-selected" data-filter-type="colorVelour" data-filter-nom="'+data.nom+'"  data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
+                    else{
+                        veloursHtml1 += '<button class="btn btn-secondary btn-filter btn-selected" data-filter-type="colorVelour" data-filter-nom="'+data.nom+'"  data-filter-value="' + data.couleur + '">' + data.couleur + '</button>';
+                    }
+                }
+            });
+            $.each(fd[nom]['allPied'], function (index, data) {
+                if(data.pied != "") {
+                    if (_.size(_.where(fd[nom]['ufilteredPied'], data)) > 0) {
+                        piedsHtml += '<button class="btn btn-primary btn-filter btn-unselected" data-filter-type="pied" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.pied + '">' + data.pied + '</button>';
+                    }
+                    else {
+                        piedsHtml += '<button class="btn btn-secondary btn-filter btn-unselected" data-filter-type="pied" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.pied + '">' + data.pied + '</button>';
+                    }
+                    if (_.size(_.where(fd[nom]['sfilteredPied'], data)) > 0) {
+                        piedsHtml1 += '<button class="btn btn-primary btn-filter btn-selected" data-filter-type="pied" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.pied + '">' + data.pied + '</button>';
+                    }
+                    else{
+                        piedsHtml1 += '<button class="btn btn-secondary btn-filter btn-selected" data-filter-type="pied" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.pied + '">' + data.pied + '</button>';
+                    }
+                }
+            });
+            $.each(fd[nom]['allCategory'], function (index, data) {
+                if(data.category != "") {
+                    if (_.size(_.where(fd[nom]['ufilteredCategory'], data)) > 0) {
+                        categoryHtml += '<button class="btn btn-primary btn-filter btn-unselected" data-filter-type="category" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.category + '">' + data.category + '</button>';
+                    }
+                    else{
+                        categoryHtml += '<button class="btn btn-secondary btn-filter btn-unselected" data-filter-type="category" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.category + '">' + data.category + '</button>';
+                    }
+                    if (_.size(_.where(fd[nom]['sfilteredCategory'], data)) > 0) {
+                        categoryHtml1 += '<button class="btn btn-primary btn-filter btn-selected" data-filter-type="category" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.category + '">' + data.category + '</button>';
+                    }
+                    else{
+                        categoryHtml1 += '<button class="btn btn-secondary btn-filter btn-selected" data-filter-type="category" data-filter-nom="' + data.nom + '"  data-filter-value="' + data.category + '">' + data.category + '</button>';
+                    }
+                }
+            });
+            var nomHTml=' <div class="col-12 nomDiv">' +
+                '                <center><h3>'+nom+'</h3></center>' +
+                '                <div class="row unselectedBlock">' +
+                '                   <div class="col-8">' +
+                '                       <h6>Couleur Tissu</h6>' +
+                '                       <div class="col-12 div">' +
+                '                           <p class="title">Toucher lin</p>' +linHtml+
+                '                       </div>' +
+                '                       <div class="col-12 div">' +
+                '                           <p class="title">Toucher velours</p>' +veloursHtml+
+                '                       </div>' +
+                '                   </div>' +
+                '                   <div class="col-4">' +
+                '                       <h6>Couleur Pieds</h6>' +
+                '                       <div class="col-12">' +
+                '                       ' +piedsHtml+
+                '                       </div>' +
+                '                   </div>' +
+                '                   <div class="col-12">' +
+                '                       <h6>Categorie</h6>' +
+                '                       <div class="col-12">' +
+                '                           ' +categoryHtml+
+                '                       </div>' +
+                '                       <h6 class="text-right">Produits sélectionnés: <b class="selectedCount" id="unselected-'+nom+'">'+ucount+'</b></h6>' +
+                '                   </div>' +
+                '               </div>' +
+                '               <div class="row selectedBlockContainer">' +
+                '                   <div class="col-12">' +
+                '                       <center><button class="btn btn-sm btn-danger btn-open-selected-block-open">+</button></center>' +
+                '                         <div class="row selectedBlock" style="display: none;">' +
+                '                             <div class="col-8">' +
+                '                                 <h6>Couleur Tissu</h6>' +
+                '                                 <div class="col-12 div">' +
+                '                                     <p class="title">Toucher lin</p>' +linHtml1+
+                '                                 </div>' +
+                '                                 <div class="col-12 div">' +
+                '                                     <p class="title">Toucher velours</p>' +veloursHtml1+
+                '                                 </div>' +
+                '                             </div>' +
+                '                             <div class="col-4">' +
+                '                                 <h6>Couleur Pieds</h6>' +
+                '                                 <div class="col-12">' +
+                '                                 ' +piedsHtml1+
+                '                                 </div>' +
+                '                             </div>' +
+                '                             <div class="col-12">' +
+                '                                 <h6>Categorie</h6>' +
+                '                                 <div class="col-12">' +
+                '                                     ' +categoryHtml1+
+                '                                 </div>' +
+                '                                 <p class="text-right">Produits sélectionnés: <b class="selectedCount" id="selected-'+nom+'">'+scount+'</b></p>' +
+                '                             </div>' +
+                '                         </div>' +
+                '                   </div>' +
+                '               </div>' +
+                '       <hr></div>';
+            html += nomHTml;
+        });
+        $('.mainBlock').append(html);
+    }
+    $(document).on('click','.btn-open-selected-block-open',function(){
+        $(this).closest('.selectedBlockContainer').find('.selectedBlock').show();
+        $(this).removeClass('btn-open-selected-block-open');
+        $(this).addClass('btn-open-selected-block-close');
+        $(this).html('-');
+    });
+    $(document).on('click','.btn-open-selected-block-close',function(){
+        $(this).closest('.selectedBlockContainer').find('.selectedBlock').hide();
+        $(this).removeClass('btn-open-selected-block-close');
+        $(this).addClass('btn-open-selected-block-open');
+        $(this).html('+');
+    });
+    function filterHtml1() {
+        var htmlColor = "";
+//        console.log(allColor);
+//        console.log(filteredColor);
+        $.each(allColor, function (index, couleur) {
+            if (couleur != "") {
+                if (filteredColor.indexOf(couleur) === -1) {
+                    htmlColor += '<button class="btn btn-secondary btn-filter" data-filter-type="color" data-filter-value="' + couleur + '">' + couleur + '</button>';
+                }
+                else {
+                    htmlColor += '<button class="btn btn-primary btn-filter btn-active" data-filter-type="color" data-filter-value="' + couleur + '">' + couleur + '</button>';
                 }
             }
         });
         $('#couleurFilter').html(htmlColor);
 
-        var piedHtml="";
-        $.each(allPied, function (index,pied) {
-            if(pied != ""){
+        var piedHtml = "";
+        $.each(allPied, function (index, pied) {
+            if (pied != "") {
                 if (filteredPied.indexOf(pied) === -1) {
-                        piedHtml += '<button class="btn btn-secondary btn-filter" data-filter-type="pied" data-filter-value="' + pied + '">' + pied + '</button>';
+                    piedHtml += '<button class="btn btn-secondary btn-filter" data-filter-type="pied" data-filter-value="' + pied + '">' + pied + '</button>';
                 }
-                else{
-                    piedHtml+= '<button class="btn btn-primary btn-filter btn-active" data-filter-type="pied" data-filter-value="'+pied+'">'+pied+'</button>';
+                else {
+                    piedHtml += '<button class="btn btn-primary btn-filter btn-active" data-filter-type="pied" data-filter-value="' + pied + '">' + pied + '</button>';
                 }
             }
         });
         $('#piedsFilter').html(piedHtml);
 
-        var categoryHtml="";
-        $.each(allCategory, function (index,category) {
-            if(category != ""){
+        var categoryHtml = "";
+        $.each(allCategory, function (index, category) {
+            if (category != "") {
                 if (filteredCategory.indexOf(category) === -1) {
-                        categoryHtml += '<button class="btn btn-secondary btn-filter" data-filter-type="category" data-filter-value="' + category + '">' + category + '</button>';
+                    categoryHtml += '<button class="btn btn-secondary btn-filter" data-filter-type="category" data-filter-value="' + category + '">' + category + '</button>';
                 }
-                else{
-                    categoryHtml+= '<button class="btn btn-primary btn-filter btn-active" data-filter-type="category" data-filter-value="'+category+'">'+category+'</button>';
+                else {
+                    categoryHtml += '<button class="btn btn-primary btn-filter btn-active" data-filter-type="category" data-filter-value="' + category + '">' + category + '</button>';
                 }
             }
         });
         $('#categoryFilter').html(categoryHtml);
 
-        var nomHtml="";
-        $.each(allNom, function (index,nom) {
-            if(nom != ""){
+        var nomHtml = "";
+        $.each(allNom, function (index, nom) {
+            if (nom != "") {
                 if (filteredNom.indexOf(nom) === -1) {
                     nomHtml += '<button class="btn btn-secondary btn-filter" data-filter-type="nom" data-filter-value="' + nom + '">' + nom + '</button>';
                 }
-                else{
-                    nomHtml += '<button class="btn btn-primary btn-filter btn-active" data-filter-type="nom" data-filter-value="'+nom+'">'+nom+'</button>';
+                else {
+                    nomHtml += '<button class="btn btn-primary btn-filter btn-active" data-filter-type="nom" data-filter-value="' + nom + '">' + nom + '</button>';
                 }
             }
         });
@@ -440,89 +476,247 @@
     }
 
     function tableHtml() {
-        var myDbName='myFilteredData';
+        var myDbName = 'myFilteredData';
         var r = Math.random().toString(36).substring(7);
-        myDbName=myDbName+'-'+r;
+        myDbName = myDbName + '-' + r;
         localStorage.setItem("myFilteredData", myDbName);
-        createMyDatabase(myDbName,filteredData);
+        createMyDatabase(myDbName, filteredData);
 
-//        console.log(filteredData);
         var tbodyHtml = "";
-        $.each(filteredData, function (index,subArray) {
-            tbodyHtml+="<tr>";
-            tbodyHtml+="<td>"+parseInt(index+1)+"</td>";
-            tbodyHtml += '<td>'+subArray['code_b_b']+'</td>';
-            tbodyHtml += '<td>'+subArray['nom']+'</td>';
-            tbodyHtml += '<td>'+subArray['category']+'</td>';
-            tbodyHtml += '<td>'+subArray['couleur']+'</td>';
-            tbodyHtml += '<td>'+subArray['pied']+'</td>';
-            tbodyHtml+="</tr>";
+        $.each(filteredData, function (index, subArray) {
+            tbodyHtml += "<tr>";
+            tbodyHtml += "<td>" + parseInt(index + 1) + "</td>";
+            tbodyHtml += '<td>' + subArray['code_b_b'] + '</td>';
+            tbodyHtml += '<td>' + subArray['nom'] + '</td>';
+            tbodyHtml += '<td>' + subArray['category'] + '</td>';
+            tbodyHtml += '<td>' + subArray['couleur'] + '</td>';
+            tbodyHtml += '<td>' + subArray['pied'] + '</td>';
+            tbodyHtml += "</tr>";
         });
         $('#tbodyHtml').html(tbodyHtml);
     }
 
-    $(document).on('click','.btn-filter',function () {
+    $(document).on('click', '.btn-filter', function () {
         var filterType = $(this).attr('data-filter-type');
         var filterVal = $(this).attr('data-filter-value');
-        if($(this).hasClass('btn-primary')){
-            if(filterType == "color"){
-                filteredColor.pop(filterVal);
-                filteredData = _.filter(filteredData, function(item) {
-                    return item.couleur != filterVal
-                });
+        var filterNom = $(this).attr('data-filter-nom');
+        if($(this).hasClass('btn-unselected')){
+            if($(this).hasClass('btn-primary')){
+                if (filterType == "colorLin") {
+                    fd[filterNom]['ufilteredColorLin'] = _.filter(fd[filterNom]['ufilteredColorLin'], function (item) {
+                        return item.couleur != filterVal
+                    });
+
+                    fd[filterNom]['ufilteredData'] = _.filter(fd[filterNom]['ufilteredData'],function (item)  {
+                        return item.couleur != filterVal
+                    });
+
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.couleur != filterVal
+                    });
+                }
+                if (filterType == "colorVelour") {
+                    fd[filterNom]['ufilteredColorVelour'] = _.filter(fd[filterNom]['ufilteredColorVelour'],  function (item) {
+                        return item.couleur != filterVal
+                    });
+
+                    fd[filterNom]['ufilteredData'] = _.filter(fd[filterNom]['ufilteredData'],  function (item) {
+                        return item.couleur != filterVal
+                    });
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.couleur != filterVal
+                    });
+                }
+                if (filterType == "pied") {
+                    fd[filterNom]['ufilteredPied'] = _.filter(fd[filterNom]['ufilteredPied'],  function (item) {
+                        return item.pied != filterVal
+                    });
+
+                    fd[filterNom]['ufilteredData'] = _.filter(fd[filterNom]['ufilteredData'], function (item) {
+                        return item.pied != filterVal
+                    });
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.pied != filterVal
+                    });
+                }
+                if (filterType == "category") {
+                    fd[filterNom]['ufilteredCategory'] = _.filter(fd[filterNom]['ufilteredCategory'], function (item) {
+                        return item.category != filterVal
+                    });
+                    fd[filterNom]['ufilteredData'] = _.filter(fd[filterNom]['ufilteredData'],  function (item) {
+                        return item.category != filterVal
+                    });
+
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.category != filterVal
+                    });
+                }
+                $(this).removeClass('btn-primary');
+                $(this).addClass('btn-secondary');
             }
-            if(filterType == "pied"){
-                filteredPied.pop(filterVal);
-                filteredData = _.filter(filteredData, function(item) {
-                    return item.pied != filterVal
-                });
-            }
-            if(filterType == "category"){
-                filteredCategory.pop(filterVal);
-                filteredData = _.filter(filteredData, function(item) {
-                    return item.category != filterVal
-                });
-            }
-            if(filterType == "nom"){
-                filteredNom.pop(filterVal);
-                filteredData = _.filter(filteredData, function(item) {
-                    return item.nom != filterVal
-                });
-            }
-//            $(this).removeClass('btn-active');
-            $(this).removeClass('btn-primary');
-            $(this).addClass('btn-secondary');
-            console.log('555555');
-    }
-        else{
-            if(filterType == "color"){
-                filteredColor.push(filterVal);
-                filteredData = _.union(filteredData,_.filter(allData, function(item) {
+            else{
+                if (filterType == "colorLin") {
+                    fd[filterNom]['ufilteredColorLin'] = _.union(fd[filterNom]['ufilteredColorLin'], _.filter(fd[filterNom]['allColorLin'], function (item) {
                         return item.couleur == filterVal;
-                }));
+                    }));
+                    fd[filterNom]['ufilteredData'] = _.union(fd[filterNom]['ufilteredData'], _.filter(fd[filterNom]['allData'], function (item) {
+                        return item.couleur == filterVal;
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.couleur == filterVal;
+                    }));
+                }
+                if (filterType == "colorVelour") {
+                    fd[filterNom]['ufilteredColorVelour'] = _.union(fd[filterNom]['ufilteredColorVelour'], _.filter(fd[filterNom]['allColorVelour'], {
+                        couleur: filterVal
+                    }));
+
+                    fd[filterNom]['ufilteredData'] = _.union(fd[filterNom]['ufilteredData'], _.filter(fd[filterNom]['allData'], {
+                        couleur: filterVal
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.couleur == filterVal;
+                    }));
+                }
+                if (filterType == "pied") {
+                    fd[filterNom]['ufilteredPied'] = _.union(fd[filterNom]['ufilteredPied'], _.filter(fd[filterNom]['allPied'], {
+                        pied: filterVal
+                    }));
+
+                    fd[filterNom]['ufilteredData'] = _.union(fd[filterNom]['ufilteredData'], _.filter(fd[filterNom]['allData'], {
+                        pied: filterVal
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.pied == filterVal;
+                    }));
+                }
+                if (filterType == "category") {
+                    fd[filterNom]['ufilteredCategory'] = _.union(fd[filterNom]['ufilteredCategory'], _.filter(fd[filterNom]['allCategory'], {
+                        category: filterVal
+                    }));
+
+                    fd[filterNom]['ufilteredData'] = _.union(fd[filterNom]['ufilteredData'], _.filter(fd[filterNom]['allData'], {
+                        category: filterVal
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.category == filterVal;
+                    }));
+                }
+                $(this).removeClass('btn-secondary');
+                $(this).addClass('btn-primary');
             }
-            if(filterType == "pied"){
-                filteredPied.push(filterVal);
-                filteredData = _.union(filteredData,_.filter(allData, function(item) {
-                    return item.pied == filterVal
-                }));
-            }
-            if(filterType == "category"){
-                filteredCategory.push(filterVal);
-                filteredData = _.union(filteredData,_.filter(allData, function(item) {
-                    return item.category == filterVal
-                }));
-            }
-            if(filterType == "nom"){
-                filteredNom.push(filterVal);
-                filteredData = _.union(filteredData,_.filter(allData, function(item) {
-                    return item.nom == filterVal
-                }));
-            }
-//            $(this).addClass('btn-active');
-            $(this).removeClass('btn-secondary');
-            $(this).addClass('btn-primary');
+            fd[filterNom]['ufilteredDataCount']= _.size(fd[filterNom]['ufilteredData']);
+            $('#unselected-'+filterNom).html(fd[filterNom]['ufilteredDataCount']);
         }
+        else if($(this).hasClass('btn-selected')) {
+            if($(this).hasClass('btn-primary')){
+                if (filterType == "colorLin") {
+                    fd[filterNom]['sfilteredColorLin'] = _.without(fd[filterNom]['sfilteredColorLin'], function (item) {
+                        return item.couleur != filterVal
+                    });
+
+                    fd[filterNom]['sfilteredData'] = _.without(fd[filterNom]['sfilteredData'], function (item) {
+                        return item.couleur != filterVal
+                    });
+
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.couleur != filterVal
+                    });
+                }
+                if (filterType == "colorVelour") {
+                    fd[filterNom]['sfilteredColorVelour'] = _.without(fd[filterNom]['sfilteredColorVelour'],function (item) {
+                        return item.couleur != filterVal
+                    });
+
+                    fd[filterNom]['sfilteredData'] = _.without(fd[filterNom]['sfilteredData'], function (item) {
+                        return item.couleur != filterVal
+                    });
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.couleur != filterVal
+                    });
+                }
+                if (filterType == "pied") {
+                    fd[filterNom]['sfilteredPied'] = _.without(fd[filterNom]['sfilteredPied'], function (item) {
+                        return item.pied != filterVal
+                    });
+
+                    fd[filterNom]['sfilteredData'] = _.without(fd[filterNom]['sfilteredData'], function (item) {
+                        return item.pied != filterVal
+                    });
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.pied != filterVal
+                    });
+                }
+                if (filterType == "category") {
+                    fd[filterNom]['sfilteredCategory'] = _.without(fd[filterNom]['sfilteredCategory'], function (item) {
+                        return item.category != filterVal
+                    });
+
+                    fd[filterNom]['sfilteredData'] = _.without(fd[filterNom]['sfilteredData'],  function (item) {
+                        return item.category != filterVal
+                    });
+                    filteredData = _.filter(filteredData, function (item) {
+                        return item.category != filterVal
+                    });
+                }
+                $(this).removeClass('btn-primary');
+                $(this).addClass('btn-secondary');
+            }
+            else{
+                if (filterType == "colorLin") {
+                    fd[filterNom]['sfilteredColorLin'] = _.union(fd[filterNom]['sfilteredColorLin'], _.filter(fd[filterNom]['allColorLin'], function (item) {
+                        return item.couleur == filterVal;
+                    }));
+                    fd[filterNom]['sfilteredData'] = _.union(fd[filterNom]['sfilteredData'], _.filter(fd[filterNom]['allData'], function (item) {
+                        return item.couleur == filterVal;
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.couleur == filterVal;
+                    }));
+                }
+                if (filterType == "colorVelour") {
+                    fd[filterNom]['sfilteredColorVelour'] = _.union(fd[filterNom]['sfilteredColorVelour'], _.filter(fd[filterNom]['allColorVelour'], {
+                        couleur: filterVal
+                    }));
+
+                    fd[filterNom]['sfilteredData'] = _.union(fd[filterNom]['sfilteredData'], _.filter(fd[filterNom]['allData'], {
+                        couleur: filterVal
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.couleur == filterVal;
+                    }));
+                }
+                if (filterType == "pied") {
+                    fd[filterNom]['sfilteredPied'] = _.union(fd[filterNom]['sfilteredPied'], _.filter(fd[filterNom]['allPied'], {
+                        pied: filterVal
+                    }));
+
+                    fd[filterNom]['sfilteredData'] = _.union(fd[filterNom]['sfilteredData'], _.filter(fd[filterNom]['allData'], {
+                        pied: filterVal
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.pied == filterVal;
+                    }));
+                }
+                if (filterType == "category") {
+                    fd[filterNom]['sfilteredCategory'] = _.union(fd[filterNom]['sfilteredCategory'], _.filter(fd[filterNom]['allCategory'], {
+                        category: filterVal
+                    }));
+
+                    fd[filterNom]['sfilteredData'] = _.union(fd[filterNom]['sfilteredData'], _.filter(fd[filterNom]['allData'], {
+                        category: filterVal
+                    }));
+                    filteredData = _.union(filteredData, _.filter(allData, function (item) {
+                        return item.category == filterVal;
+                    }));
+                }
+                $(this).removeClass('btn-secondary');
+                $(this).addClass('btn-primary');
+            }
+            fd[filterNom]['sfilteredDataCount']= _.size(fd[filterNom]['sfilteredData']);
+            $('#selected-'+filterNom).html(fd[filterNom]['sfilteredDataCount']);
+        }
+
         tableHtml();
 //        filterHtml();
     });
@@ -533,41 +727,41 @@
         return "indexedDB" in window;
     }
 
-    function createMyDatabase(db_name,jsonData) {
-        console.log(db_name);
+    function createMyDatabase(db_name, jsonData) {
+//        console.log(db_name);
         //No support? Go in the corner and pout.
-        if(!indexedDBOk) return;
+        if (!indexedDBOk) return;
 
-        var openRequest = indexedDB.open(db_name,1);
+        var openRequest = indexedDB.open(db_name, 1);
 
-        openRequest.onupgradeneeded = function(e) {
+        openRequest.onupgradeneeded = function (e) {
             var thisDB = e.target.result;
 
-            if(!thisDB.objectStoreNames.contains(db_name)) {
+            if (!thisDB.objectStoreNames.contains(db_name)) {
                 thisDB.createObjectStore(db_name);
             }
         };
-        openRequest.onsuccess = function(e) {
+        openRequest.onsuccess = function (e) {
             console.log("running onsuccess");
 
             db = e.target.result;
-            var transaction = db.transaction([db_name],"readwrite");
+            var transaction = db.transaction([db_name], "readwrite");
             var store = transaction.objectStore(db_name);
 
             //Perform the add
-            var request = store.add(jsonData,1);
+            var request = store.add(jsonData, 1);
 
-            request.onerror = function(e) {
-                alert("Error",e.target.error.name);
+            request.onerror = function (e) {
+                alert("Error", e.target.error.name);
                 //some type of error handler
             };
 
-            request.onsuccess = function(e) {
+            request.onsuccess = function (e) {
                 console.log("Woot! Did it");
                 $('.bottomButtons').show();
             };
         };
-        openRequest.onerror = function(e) {
+        openRequest.onerror = function (e) {
             //Do something for the error
         };
     }
