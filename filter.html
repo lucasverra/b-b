@@ -611,11 +611,11 @@
         else if($(this).hasClass('btn-selected')) {
             if($(this).hasClass('btn-primary')){
                 if (filterType == "colorLin") {
-                    fd[filterNom]['sfilteredColorLin'] = _.without(fd[filterNom]['sfilteredColorLin'], function (item) {
+                    fd[filterNom]['sfilteredColorLin'] = _.filter(fd[filterNom]['sfilteredColorLin'], function (item) {
                         return item.couleur != filterVal
                     });
 
-                    fd[filterNom]['sfilteredData'] = _.without(fd[filterNom]['sfilteredData'], function (item) {
+                    fd[filterNom]['sfilteredData'] = _.filter(fd[filterNom]['sfilteredData'], function (item) {
                         return item.couleur != filterVal
                     });
 
@@ -624,11 +624,11 @@
                     });
                 }
                 if (filterType == "colorVelour") {
-                    fd[filterNom]['sfilteredColorVelour'] = _.without(fd[filterNom]['sfilteredColorVelour'],function (item) {
+                    fd[filterNom]['sfilteredColorVelour'] = _.filter(fd[filterNom]['sfilteredColorVelour'],function (item) {
                         return item.couleur != filterVal
                     });
 
-                    fd[filterNom]['sfilteredData'] = _.without(fd[filterNom]['sfilteredData'], function (item) {
+                    fd[filterNom]['sfilteredData'] = _.filter(fd[filterNom]['sfilteredData'], function (item) {
                         return item.couleur != filterVal
                     });
                     filteredData = _.filter(filteredData, function (item) {
@@ -636,11 +636,11 @@
                     });
                 }
                 if (filterType == "pied") {
-                    fd[filterNom]['sfilteredPied'] = _.without(fd[filterNom]['sfilteredPied'], function (item) {
+                    fd[filterNom]['sfilteredPied'] = _.filter(fd[filterNom]['sfilteredPied'], function (item) {
                         return item.pied != filterVal
                     });
 
-                    fd[filterNom]['sfilteredData'] = _.without(fd[filterNom]['sfilteredData'], function (item) {
+                    fd[filterNom]['sfilteredData'] = _.filter(fd[filterNom]['sfilteredData'], function (item) {
                         return item.pied != filterVal
                     });
                     filteredData = _.filter(filteredData, function (item) {
@@ -648,7 +648,7 @@
                     });
                 }
                 if (filterType == "category") {
-                    fd[filterNom]['sfilteredCategory'] = _.without(fd[filterNom]['sfilteredCategory'], function (item) {
+                    fd[filterNom]['sfilteredCategory'] = _.filter(fd[filterNom]['sfilteredCategory'], function (item) {
                         return item.category != filterVal
                     });
 
@@ -720,7 +720,6 @@
         tableHtml();
 //        filterHtml();
     });
-
     var db;
 
     function indexedDBOk() {
