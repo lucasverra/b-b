@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         table, th, td {
@@ -45,6 +46,49 @@
         }
     </style>
     <style>
+        #search{
+            font-family: FontAwesome;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .center-align{
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+        #filterContent{
+            background: #f5f5f503;
+            border: none !important;
+        }
+        .FilterTd{
+            background: #f5f5f503;
+            border: none !important;
+            padding: 0px 5px;
+        }
+        .filter{
+            background-color: white;
+            height: 150px;
+            overflow: auto;
+        }
+        .modal-header{
+            background-color: #dedcde;
+            padding: 5px;
+        }
+        .sort{
+            background-color: #eceff163;
+            border: 1px solid;
+            border-radius: 5px;
+            display: flex;  padding: 0 8px;
+        }
+        .caretBtn{
+            float: right;
+            border: none;
+            background: transparent;
+        }
+        hr{
+            border-top: 1px solid #c7c6c6;
+            margin-top: 40px;
+        }
         .div {
             border: 1px solid black;
             padding: 10px;
@@ -75,6 +119,11 @@
         }
         .selectedBlock{
             padding: 20px;
+        }
+        .vertical_text{
+            writing-mode: tb-rl;
+            text-orientation: upright;
+            font-size: 9px; font-weight: bold;
         }
     </style>
 </head>
@@ -139,21 +188,50 @@
 </div>
 
 <div class="tableFixHead mt-20 hidden">
-    <table class="table table-bordered tableresult">
+    <table class="table table-bordered tableresult" id="myTable">
         <thead id="theadHtml">
         <tr>
             <th>#</th>
-            <th>CODE B&B</th>
-            <th>NOM</th>
-            <th>CATEGORIE</th>
-            <th>COULEUR</th>
-            <th>PIEDS</th>
+            <th>CODE B&B <button type="button" class="caretBtn" data-toggle="modal" data-target="#filterModal" onclick="setFilterContent('code_b_b')"><i class="fa fa-caret-down"></i></button></th>
+            <th>NOM <button type="button" class="caretBtn" data-toggle="modal" data-target="#filterModal" onclick="setFilterContent('nom')"><i class="fa fa-caret-down"></i></button></th>
+            <th>CATEGORIE <button type="button" class="caretBtn" data-toggle="modal" data-target="#filterModal" onclick="setFilterContent('category')"><i class="fa fa-caret-down"></i></button></th>
+            <th>COULEUR <button type="button" class="caretBtn" data-toggle="modal" data-target="#filterModal" onclick="setFilterContent('couleur')"><i class="fa fa-caret-down"></i></button></th>
+            <th>PIEDS <button type="button" class="caretBtn" data-toggle="modal" data-target="#filterModal" onclick="setFilterContent('pied')"><i class="fa fa-caret-down"></i></button></th>
         </tr>
         </thead>
         <tbody id="tbodyHtml">
 
         </tbody>
     </table>
+    <div class="modal fade" id="filterModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="background-color: #ececec;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 center-align">
+                    <div class="col-md-8">
+                        <b>Sort</b><br>
+                        <input type="hidden" value="" id="ContentType">
+                        <button type="button" class="sort pull-left" onclick="SortAsc();"><span class="vertical_text">AZ </span><i style="margin: auto;" class="fa fa-long-arrow-down"></i><span> &ensp;Ascending</span></button>
+                        <button type="button" class="sort pull-right" onclick="SortDsc();"><span class="vertical_text">ZA </span><i style="margin: auto;" class="fa fa-long-arrow-down"></i><span> &ensp;Descending</span></button>
+                        <hr>
+                        <input type="text" placeholder="&#xF002; Search" name="search" id="search">
+                        <hr style="margin-top: 10px">
+                        <b>Filter</b><br>
+                        <div class="filter">
+                            <table id="filterContent">
+
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="bottomButtons text-center">
     <center>
@@ -172,11 +250,11 @@
     $('.loading').show();
     var dbName = localStorage.getItem("myDbName");
     var filteredDbName = localStorage.getItem("myFilteredData");
-
     var db;
     var db1;
     var allData = [];
     var filteredData = [];
+    var filteredData1 = [];
 
     var allColor = [];
     var allCategory = [];
@@ -208,6 +286,7 @@
                     if (cursor) {
                         allData = cursor.value;
                         filteredData = allData;
+                        filteredData1 = allData;
 
                         allNom = _.uniq(allData, function (arrray) {
                             return arrray.nom.trim();
@@ -496,6 +575,27 @@
         $('#tbodyHtml').html(tbodyHtml);
     }
 
+    function tableHtml1() {
+        var myDbName = 'myFilteredData';
+        var r = Math.random().toString(36).substring(7);
+        myDbName = myDbName + '-' + r;
+        localStorage.setItem("myFilteredData", myDbName);
+        createMyDatabase(myDbName, filteredData);
+
+        var tbodyHtml = "";
+        $.each(filteredData1, function (index, subArray) {
+            tbodyHtml += "<tr>";
+            tbodyHtml += "<td>" + parseInt(index + 1) + "</td>";
+            tbodyHtml += '<td>' + subArray['code_b_b'] + '</td>';
+            tbodyHtml += '<td>' + subArray['nom'] + '</td>';
+            tbodyHtml += '<td>' + subArray['category'] + '</td>';
+            tbodyHtml += '<td>' + subArray['couleur'] + '</td>';
+            tbodyHtml += '<td>' + subArray['pied'] + '</td>';
+            tbodyHtml += "</tr>";
+        });
+        $('#tbodyHtml').html(tbodyHtml);
+    }
+
     $(document).on('click', '.btn-filter', function () {
         var filterType = $(this).attr('data-filter-type');
         var filterVal = $(this).attr('data-filter-value');
@@ -716,12 +816,9 @@
             fd[filterNom]['sfilteredDataCount']= _.size(fd[filterNom]['sfilteredData']);
             $('#selected-'+filterNom).html(fd[filterNom]['sfilteredDataCount']);
         }
-
         tableHtml();
-//        filterHtml();
     });
     var db;
-
     function indexedDBOk() {
         return "indexedDB" in window;
     }
@@ -763,5 +860,154 @@
         openRequest.onerror = function (e) {
             //Do something for the error
         };
+    }
+
+    function setFilterContent(val) {
+        var cat = [];
+        var CAtHtml = "";
+        $('#ContentType').val(val);
+        $.each(filteredData, function (index, subArray) {
+            cat.push(subArray[val]);
+        });
+        CAtHtml += "<tr class='FilterTd'>";
+        CAtHtml += "<td class='FilterTd'><input type='checkbox' id='select_all' value='1' name='check_all'></td>";
+        CAtHtml += "<td class='FilterTd'> (Select All) </td>";
+        CAtHtml += "</tr>";
+        $.each(_.uniq(cat), function (index, SubCat) {
+            CAtHtml += "<tr class='FilterTd'>";
+            CAtHtml += "<td class='FilterTd'><input type='checkbox' id='"+index+"' value='"+SubCat+"' data-filter-type='"+val+"' data-filter-value='"+SubCat+"' class='CheckBox "+val+"'></td>";
+            CAtHtml += "<td class='FilterTd'>" + SubCat + "</td>";
+            CAtHtml += "</tr>";
+        });
+        $('#filterContent').html(CAtHtml);
+    }
+    $(document).on('change','input[name="check_all"]',function() {
+        $('.CheckBox').not(this).prop('checked', this.checked);
+    });
+    $(document).on('change', '.CheckBox', function () {
+        var filterType = $(this).attr('data-filter-type');
+        var filterVal = $(this).attr('data-filter-value');
+        filteredData1 = "";
+        if (filterType == "code_b_b") {
+            $('.'+filterType).each(function () {
+                if ($(this).is(":checked")) {
+                    var filterVal1 = $(this).attr('data-filter-value');
+                    filteredData1 = _.union(filteredData1, _.filter(allData, function (item) {
+                        return item.code_b_b == filterVal1;
+                    }));
+                }
+            });
+        }
+        if (filterType == "couleur") {
+            $('.'+filterType).each(function () {
+                if ($(this).is(":checked")) {
+                    var filterVal1 = $(this).attr('data-filter-value');
+                    filteredData1 = _.union(filteredData1, _.filter(allData, function (item) {
+                        return item.couleur == filterVal1;
+                    }));
+
+                }
+            });
+        }
+        if (filterType == "nom") {
+            $('.'+filterType).each(function () {
+                if ($(this).is(":checked")) {
+                    var filterVal1 = $(this).attr('data-filter-value');
+                    filteredData1 = _.union(filteredData1, _.filter(allData, function (item) {
+                        return item.nom == filterVal1;
+                    }));
+                }
+            });
+        }
+        if (filterType == "pied") {
+            $('.'+filterType).each(function () {
+                if ($(this).is(":checked")) {
+                    var filterVal1 = $(this).attr('data-filter-value');
+                    filteredData1 = _.union(filteredData1, _.filter(allData, function (item) {
+                        return item.pied == filterVal1;
+                    }));
+                }
+            });
+        }
+        if (filterType == "category") {
+            $('.'+filterType).each(function () {
+                if ($(this).is(":checked")) {
+                    var filterVal1 = $(this).attr('data-filter-value');
+                    filteredData1 = _.union(filteredData1, _.filter(allData, function (item) {
+                        return item.category == filterVal1;
+                    }));
+                }
+            });
+        }
+        tableHtml1();
+    });
+    function SortAsc() {
+        var ColName = $('#ContentType').val();
+        if(ColName == "code_b_b"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.code_b_b];
+                });
+        }
+        if(ColName == "category"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.category];
+                });
+        }
+        if(ColName == "couleur"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.couleur];
+                });
+        }
+        if(ColName == "nom"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.nom];
+                });
+        }
+        if(ColName == "pied"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.pied];
+                });
+        }
+        tableHtml1();
+    }
+
+    function SortDsc() {
+        var ColName = $('#ContentType').val();
+        if(ColName == "code_b_b"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.code_b_b];
+                }).reverse();
+        }
+        if(ColName == "category"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.category];
+                }).reverse();
+        }
+        if(ColName == "couleur"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.couleur];
+                }).reverse();
+        }
+        if(ColName == "nom"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.nom];
+                }).reverse();
+        }
+        if(ColName == "pied"){
+            filteredData1 = _(filteredData1).sortBy(
+                function(item){
+                    return [item.pied];
+                }).reverse();
+        }
+        tableHtml1();
     }
 </script>
