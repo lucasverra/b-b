@@ -80,8 +80,6 @@
             }
 
             var arrayOfData=to_json(workbook);
-             console.log("***************");
-             console.log(arrayOfData);
             var myDbName=workbook.SheetNames[0];
             myDbName=myDbName.replace(/ /g,"_");
             var r = Math.random().toString(36).substring(7);
@@ -106,13 +104,10 @@
             var category="";
             var pied="";
             var tissu="";
-
-            // console.log(arrayOfData);
             var sheetCount=0;
             $.each(arrayOfData, function (index,subArray) {
                 if(sheetCount == 0){
                     sheetCount = parseInt(sheetCount + 1);
-                    // console.log(index);
                     for (var key in subArray) {
                         if(key == 0){
                             for (var key1 in subArray[key]) {
@@ -122,7 +117,6 @@
                                         currentVal = currentVal.trim();
                                         currentVal = currentVal.toLowerCase();
                                     }
-                                    // console.log(currentVal);
                                 }
                                 if (currentVal == "MARQUE" || currentVal == "marque" ||  currentVal == "marque / brand" || currentVal == "MARQUE / BRAND") {
                                     marque = key1;
@@ -133,19 +127,28 @@
                                 if (currentVal == "EAN 13" || currentVal == "ean 13" || currentVal == "EAN" || currentVal == "ean") {
                                     ean_13 = key1;
                                 }
-                                if (currentVal == "NOM" || currentVal == "nom" || currentVal == "MODEL NAME" || currentVal == "model name" || currentVal == "nom  modele / model name" || currentVal == "NOM MODELE / MODEL NAME" || currentVal == "nom  modele" || currentVal == "NOM  MODELE") {
+                                if (currentVal == "NOM" || currentVal == "nom" || currentVal == "nom  modele / model name" || currentVal == "NOM MODELE / MODEL NAME" || currentVal == "nom  modele" || currentVal == "NOM  MODELE") {
                                     nom = key1;
                                 }
-                                // if (currentVal == "couleur" || currentVal == "COULEUR") {
-                                //     couleur = key1;
+                                // if (currentVal == "NOM" || currentVal == "nom" || currentVal == "MODEL NAME" || currentVal == "model name" || currentVal == "nom  modele / model name" || currentVal == "NOM MODELE / MODEL NAME" || currentVal == "nom  modele" || currentVal == "NOM  MODELE") {
+                                //     nom = key1;
                                 // }
-                                if (currentVal == "categorie" || currentVal == "CATEGORIE" || currentVal == "TYPE" || currentVal == "type" || currentVal == "CATEGORIE PRODUIT" || currentVal == "categorie produit") {
+                                if (currentVal == "couleur" || currentVal == "COULEUR") {
+                                    couleur = key1;
+                                }
+                                if (currentVal == "TYPE/ CATEGORIE PRODUIT" || currentVal == "type/ categorie produit" || currentVal == "categorie" || currentVal == "CATEGORIE") {
                                     category = key1;
                                 }
-                                if (currentVal == "pieds" || currentVal == "PIEDS" || currentVal == "couleur" || currentVal == "COULEUR" || currentVal == "COULEUR PIEDS" || currentVal == "couleur pieds") {
+                                // if (currentVal == "categorie" || currentVal == "CATEGORIE" || currentVal == "type/ categorie produit" || currentVal == "TYPE/ CATEGORIE PRODUIT" || currentVal == "CATEGORIE PRODUIT" || currentVal == "categorie produit") {
+                                //     category = key1;
+                                // }
+                                // if (currentVal == "categorie" || currentVal == "CATEGORIE" || currentVal == "TYPE" || currentVal == "type/ categorie produit" || currentVal == "type / category of product" || currentVal == "TYPE / CATEGORY OF PRODUCT" || currentVal == "TYPE/ CATEGORIE PRODUIT" || currentVal == "type" || currentVal == "CATEGORIE PRODUIT" || currentVal == "categorie produit") {
+                                //     category = key1;
+                                // }
+                                if (currentVal == "pieds" || currentVal == "PIEDS" ||  currentVal == "COULEUR PIEDS" || currentVal == "couleur pieds") {
                                     pied = key1;
                                 }
-                                if (currentVal == "tissu" || currentVal == "TISSU") {
+                                if (currentVal == "tissu" || currentVal == "TISSU" || currentVal == "tissu/materiau" || currentVal == "TISSU/MATERIAU") {
                                     tissu = key1;
                                 }
                             }
@@ -200,11 +203,12 @@
                                     }
                                     if (nom != ""&& key1 == nom) {
                                         if (subArray[key][nom] != "") {
+                                            //nothing
                                         }
                                         else {
                                             emptyNomArray.push('empty');
                                         }
-                                        finalSubArray['nom'] = subArray[key][nom];
+                                        finalSubArray['nom'] = subArray[key][nom].trim().replace(/[^A-Z0-9]+/ig, "_");
                                     }
                                     if (category != ""&& key1 == category) {
                                         finalSubArray['category'] = subArray[key][category];
@@ -225,8 +229,6 @@
                     }
                 }
             });
-
-            // console.log(repeatedCodeBBArray);
             if(marque == ""){
                 errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
@@ -255,9 +257,6 @@
                     '        </div>' +
                     '    </div>';
             }
-//            console.log(repeatedCodeBBArray);
-           console.log("!!!!!!!!!!!!!!!!!!!!!!!!!");
-           console.log(marqueArray);
             if(marqueArray.length > 1){
                 errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
@@ -344,10 +343,8 @@
         if(!indexedDBOk) return;
 
         var openRequest = indexedDB.open(db_name,1);
-
         openRequest.onupgradeneeded = function(e) {
             var thisDB = e.target.result;
-
             if(!thisDB.objectStoreNames.contains(db_name)) {
                 thisDB.createObjectStore(db_name);
             }
