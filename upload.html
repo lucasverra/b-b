@@ -30,7 +30,6 @@
 
     <div class="file-upload">
         <div class="image-upload-wrap">
-
             <input class="file-upload-input" type='text' id="input-excel" />
             <i class="material-icons">cloud_upload</i>
             <div class="drag-text">
@@ -81,7 +80,6 @@
             }
 
             var arrayOfData=to_json(workbook);
-            // console.log(arrayOfData);
             var myDbName=workbook.SheetNames[0];
             myDbName=myDbName.replace(/ /g,"_");
             var r = Math.random().toString(36).substring(7);
@@ -105,41 +103,53 @@
             var couleur="";
             var category="";
             var pied="";
-
-            // console.log(arrayOfData);
+            var tissu="";
             var sheetCount=0;
             $.each(arrayOfData, function (index,subArray) {
                 if(sheetCount == 0){
                     sheetCount = parseInt(sheetCount + 1);
-
-                    // console.log(index);
                     for (var key in subArray) {
                         if(key == 0){
                             for (var key1 in subArray[key]) {
                                 var currentVal = subArray[key][key1];
                                 if (currentVal != "") {
-                                    currentVal = currentVal.trim().toLowerCase();
+                                    if (typeof currentVal == 'string'){
+                                        currentVal = currentVal.trim();
+                                        currentVal = currentVal.toLowerCase();
+                                    }
                                 }
-                                if (currentVal == "MARQUE" || currentVal == "marque") {
+                                if (currentVal == "MARQUE" || currentVal == "marque" ||  currentVal == "marque / brand" || currentVal == "MARQUE / BRAND") {
                                     marque = key1;
                                 }
-                                if (currentVal == "CODE B&B" || currentVal == "code b&b") {
+                                if (currentVal == "REFERENCE B&B" || currentVal == "reference b&b" || currentVal == "references  b&b" || currentVal == "REFERENCES  B&B" || currentVal == "CODE B&B" || currentVal == "code b&b") {
                                     codeB_B = key1;
                                 }
-                                if (currentVal == "EAN 13" || currentVal == "ean 13") {
+                                if (currentVal == "EAN 13" || currentVal == "ean 13" || currentVal == "EAN" || currentVal == "ean") {
                                     ean_13 = key1;
                                 }
-                                if (currentVal == "NOM" || currentVal == "nom") {
+                                if (currentVal == "NOM" || currentVal == "nom" || currentVal == "nom  modele / model name" || currentVal == "NOM MODELE / MODEL NAME" || currentVal == "nom  modele" || currentVal == "NOM  MODELE") {
                                     nom = key1;
                                 }
+                                // if (currentVal == "NOM" || currentVal == "nom" || currentVal == "MODEL NAME" || currentVal == "model name" || currentVal == "nom  modele / model name" || currentVal == "NOM MODELE / MODEL NAME" || currentVal == "nom  modele" || currentVal == "NOM  MODELE") {
+                                //     nom = key1;
+                                // }
                                 if (currentVal == "couleur" || currentVal == "COULEUR") {
                                     couleur = key1;
                                 }
-                                if (currentVal == "categorie" || currentVal == "CATEGORIE") {
+                                if (currentVal == "TYPE/ CATEGORIE PRODUIT" || currentVal == "type/ categorie produit" || currentVal == "categorie" || currentVal == "CATEGORIE") {
                                     category = key1;
                                 }
-                                if (currentVal == "pieds" || currentVal == "PIEDS") {
+                                // if (currentVal == "categorie" || currentVal == "CATEGORIE" || currentVal == "type/ categorie produit" || currentVal == "TYPE/ CATEGORIE PRODUIT" || currentVal == "CATEGORIE PRODUIT" || currentVal == "categorie produit") {
+                                //     category = key1;
+                                // }
+                                // if (currentVal == "categorie" || currentVal == "CATEGORIE" || currentVal == "TYPE" || currentVal == "type/ categorie produit" || currentVal == "type / category of product" || currentVal == "TYPE / CATEGORY OF PRODUCT" || currentVal == "TYPE/ CATEGORIE PRODUIT" || currentVal == "type" || currentVal == "CATEGORIE PRODUIT" || currentVal == "categorie produit") {
+                                //     category = key1;
+                                // }
+                                if (currentVal == "pieds" || currentVal == "PIEDS" ||  currentVal == "COULEUR PIEDS" || currentVal == "couleur pieds") {
                                     pied = key1;
+                                }
+                                if (currentVal == "tissu" || currentVal == "TISSU" || currentVal == "tissu/materiau" || currentVal == "TISSU/MATERIAU") {
+                                    tissu = key1;
                                 }
                             }
                         }
@@ -150,6 +160,7 @@
                             finalSubArray['category'] = "";
                             finalSubArray['couleur'] = "";
                             finalSubArray['pied'] = "";
+                            finalSubArray['tissu'] = "";
                             for (var key1 in subArray[key]) {
                                 if(key != 0) {
                                     if (marque != "" && key1 == marque) {
@@ -161,10 +172,9 @@
                                         else {
                                             emptyMarqueArray.push('empty');
                                         }
+                                        finalSubArray['marque'] = subArray[key][marque];
                                     }
                                     if (codeB_B != ""&& key1 == codeB_B) {
-                                        // console.log(subArray[key]);
-                                        // console.log(subArray[key][codeB_B]);
                                         if (subArray[key][codeB_B] != "") {
                                             if (codeBBArray.indexOf(subArray[key][codeB_B]) === -1) {
                                                 codeBBArray.push(subArray[key][codeB_B]);
@@ -193,11 +203,12 @@
                                     }
                                     if (nom != ""&& key1 == nom) {
                                         if (subArray[key][nom] != "") {
+                                            //nothing
                                         }
                                         else {
                                             emptyNomArray.push('empty');
                                         }
-                                        finalSubArray['nom'] = subArray[key][nom];
+                                        finalSubArray['nom'] = subArray[key][nom].trim().replace(/[^A-Z0-9]+/ig, "_");
                                     }
                                     if (category != ""&& key1 == category) {
                                         finalSubArray['category'] = subArray[key][category];
@@ -208,6 +219,9 @@
                                     if (pied != ""&& key1 == pied) {
                                         finalSubArray['pied'] = subArray[key][pied];
                                     }
+                                    if (tissu != ""&& key1 == tissu) {
+                                        finalSubArray['tissu'] = subArray[key][tissu];
+                                    }
                                 }
                             }
                             finalArray.push(finalSubArray);
@@ -215,38 +229,34 @@
                     }
                 }
             });
-
-            // console.log(repeatedCodeBBArray);
             if(marque == ""){
                 errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
-                    '            Erreur : pas de colonne MARQUE.' +
+                    '            Erreur : pas de colonne MARQUE / BRAND.' +
                     '        </div>' +
                     '    </div>';
             }
             if(codeB_B == ""){
                 errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
-                    '             Erreur : pas de colonne CODE B&B.' +
+                    '             Erreur : pas de colonne REFERENCE B&B.' +
                     '        </div>' +
                     '    </div>';
             }
             if(ean_13 == ""){
                 errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
-                    '             Erreur : pas de colonne EAN 13.' +
+                    '             Erreur : pas de colonne EAN.' +
                     '        </div>' +
                     '    </div>';
             }
             if(nom == ""){
                 errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
-                    '             Erreur : pas de colonne NOM.' +
+                    '             Erreur : pas de colonne NOM  MODELE / MODEL NAME.' +
                     '        </div>' +
                     '    </div>';
             }
-//            console.log(repeatedCodeBBArray);
-//            console.log(repeatedEan13Array);
             if(marqueArray.length > 1){
                 errorHTML += ' <div class="container mt-20">' +
                     '        <div class="alert alert-danger" role="alert">' +
@@ -328,14 +338,13 @@
     }
 
     function createMyDatabase(db_name,jsonData) {
+        localStorage.setItem("myFilteredData", "");
         //No support? Go in the corner and pout.
         if(!indexedDBOk) return;
 
         var openRequest = indexedDB.open(db_name,1);
-
         openRequest.onupgradeneeded = function(e) {
             var thisDB = e.target.result;
-
             if(!thisDB.objectStoreNames.contains(db_name)) {
                 thisDB.createObjectStore(db_name);
             }
