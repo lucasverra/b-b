@@ -1,5 +1,9 @@
 import React from 'react';
 
+// redux
+import {Provider} from 'react-redux'
+import configureStore from './redux/store';
+
 // comps
 import Router from './router';
 
@@ -7,11 +11,13 @@ import Router from './router';
 import 'antd/dist/antd.css';
 
 function App() {
-  return (
-    <div id="App">
-      <Router/>
-    </div>
-  );
+    return (
+        <div id="App">
+            <Provider store={configureStore()}>
+                <Router/>
+            </Provider>
+        </div>
+    );
 }
 
 export default App;

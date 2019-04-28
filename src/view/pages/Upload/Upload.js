@@ -26,6 +26,13 @@ class Upload extends React.Component {
         };
     }
 
+    onNext = () => {
+        const { history } = this.props;
+        const { fileData } = this.state;
+
+        history.push('/filters', fileData);
+    };
+
     draggerConfig = {
         name: 'file',
         multiple: false,
@@ -47,7 +54,7 @@ class Upload extends React.Component {
                     <p className="ant-upload-text">Click or drag file to this area to upload</p>
                 </AntUpload.Dragger>
                 {
-                    fileData && <Button type="primary">Next</Button>
+                    fileData && <Button type="primary" onClick={this.onNext}>Next</Button>
                 }
             </div>
         )
