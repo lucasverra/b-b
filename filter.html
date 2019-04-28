@@ -553,7 +553,6 @@
         var filterNom = $(this).closest('.unselectedBlock').find('.btn-unselected').attr('data-filter-nom');
         $(this).closest('.unselectedBlock').find('.btn-unselected').removeClass('btn-primary');
         $(this).closest('.unselectedBlock').find('.btn-unselected').addClass('btn-secondary');
-		  $(this).closest('.unselectedBlock').find('.btn-unselected').addClass('btn-primary');
         fd[filterNom]['ufilteredData'][0]        = [];
         fd[filterNom]['ufilteredDataCount'][0] = "";
         $('#unselected-'+filterNom).html(0);
