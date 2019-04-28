@@ -1,6 +1,6 @@
 import React from 'react';
 import {Upload as AntUpload, Icon, Button, Alert} from 'antd';
-import {read, utils } from 'xlsx';
+import {read, utils} from 'xlsx';
 import _ from 'underscore';
 
 // other
@@ -60,8 +60,8 @@ class Upload extends React.Component {
     };
 
     onNext = () => {
-        const { history } = this.props;
-        const { fileData } = this.state;
+        const {history} = this.props;
+        const {fileData} = this.state;
 
         history.push('/filters', fileData);
     };
@@ -72,11 +72,12 @@ class Upload extends React.Component {
         accept: '.xlsx',
         action: (file) => {
             reader.readAsBinaryString(file);
-        }
+        },
+        onRemove: () => this.setState({fileData: null, errors: null}),
     };
 
     render() {
-        const { fileData, errors } = this.state;
+        const {fileData, errors} = this.state;
 
         return (
             <div>
@@ -93,7 +94,7 @@ class Upload extends React.Component {
                 <br/>
                 {
                     errors && Object.keys(errors).map(error => (
-                        <Alert style={{ marginBottom: '8px'}} key={error} message={errors[error]} type="error"/>
+                        <Alert style={{marginBottom: '8px'}} key={error} message={errors[error]} type="error"/>
                     ))
                 }
             </div>
