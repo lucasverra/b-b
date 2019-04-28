@@ -93,7 +93,7 @@ class Upload extends React.Component {
                 <br/>
                 {
                     errors && Object.keys(errors).map(error => (
-                        <Alert style={{ marginBottom: '8px'}} message={errors[error]} type="error"/>
+                        <Alert style={{ marginBottom: '8px'}} key={error} message={errors[error]} type="error"/>
                     ))
                 }
             </div>
