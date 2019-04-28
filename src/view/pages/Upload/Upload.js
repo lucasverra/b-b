@@ -4,26 +4,29 @@ import {read, utils} from 'xlsx';
 
 const reader = new FileReader();
 
+reader.onload = (evt) => {
+    /* Parse data */
+    const bstr = evt.target.result;
+    const wb = read(bstr, {type: 'binary'});
+    /* Get first worksheet */
+    const wsname = wb.SheetNames[0];
+    const ws = wb.Sheets[wsname];
+    /* Convert array of arrays */
+    const data = utils.sheet_to_json(ws, {header: 1});
+    reader.onSuccess(data);
+};
+
 class Upload extends React.Component {
     state = {
         fileData: null,
     };
 
     componentDidMount() {
-        reader.onload = (evt) => {
-            /* Parse data */
-            const bstr = evt.target.result;
-            const wb = read(bstr, {type: 'binary'});
-            /* Get first worksheet */
-            const wsname = wb.SheetNames[0];
-            const ws = wb.Sheets[wsname];
-            /* Convert array of arrays */
-            const data = utils.sheet_to_json(ws, {header: 1});
-            /* Update state */
+        reader.onSuccess = (fileData) => {
             this.setState({
-                fileData: data,
-            });
-        };
+                fileData,
+            })
+        }
     }
 
     onNext = () => {
