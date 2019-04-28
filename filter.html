@@ -353,7 +353,7 @@
                             $('#marqueName').html('<h1>' + marq.marque + '</h1>');
                         }
                     });
-                    filterHtml();
+                    ///filterHtml();
                     tableHtml();
                     $('.loading').hide();
                     cursor.continue();
@@ -542,7 +542,7 @@
         var filterNom = $(this).closest('.selectedBlockContainer').find('#'+DivName).find('.btn-primary').attr('data-filter-nom');
         $(this).closest('.selectedBlockContainer').find('#'+DivName).find('.btn-selected').removeClass('btn-primary');
         $(this).closest('.selectedBlockContainer').find('#'+DivName).find('.btn-selected').addClass('btn-secondary');
-        fd[filterNom]['sfilteredData'][0]        = [];
+        fd[filterNom]['sfilteredData']       = [];
         fd[filterNom]['sfilteredDataCount']   = 0;
         $(this).closest('.selectedBlockContainer').find('#'+DivName).find('#selected-'+filterNom).html(0);
         tableHtml();
