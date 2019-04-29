@@ -35,7 +35,7 @@ class Filters extends React.Component {
                         <Card
                             title={model}
                             style={{marginBottom: '8px'}}
-                            extra={productModels[model].data.length}
+                            extra={`Produits séléctionnés: ${productModels[model].data.length}`}
                             key={model}
                         >
                             {
