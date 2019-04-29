@@ -26,7 +26,6 @@ class Filters extends React.Component {
 
         if (!productModels) return <Skeleton/>;
 
-        console.log(file);
         console.log(productModels);
 
         return (
@@ -37,10 +36,10 @@ class Filters extends React.Component {
                         <Card
                             title={model}
                             style={{marginBottom: '8px'}}
-                            extra={productModels[model].length}
+                            extra={productModels[model].data.length}
                             key={model}
                         >
-                            model
+                            models
                         </Card>
                     ))
                 }
