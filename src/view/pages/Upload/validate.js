@@ -50,5 +50,5 @@ export default (data) => {
         }
     });
 
-    return errors;
+    return Object.keys(errors).length > 0 ? errors : null;
 }

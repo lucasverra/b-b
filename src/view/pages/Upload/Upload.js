@@ -27,10 +27,10 @@ class Upload extends React.Component {
     };
 
     componentDidMount() {
-        reader.onSuccess = this.validateFile;
+        reader.onSuccess = this.onFileUploadSuccess;
     }
 
-    validateFile = (file) => {
+    onFileUploadSuccess = (file) => {
         const brand = file[0];
         const columns = file[1];
         const data = _.map(file.slice(2), item => {
@@ -44,7 +44,7 @@ class Upload extends React.Component {
 
         const errors = validate(data);
 
-        if (!!errors.length) {
+        if (!errors) {
             this.setState({
                 fileData: {
                     brand,
@@ -78,6 +78,9 @@ class Upload extends React.Component {
 
     render() {
         const {fileData, errors} = this.state;
+
+        console.log(fileData);
+        console.log(errors);
 
         return (
             <div>
