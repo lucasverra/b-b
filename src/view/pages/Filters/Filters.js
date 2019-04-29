@@ -12,6 +12,32 @@ class Filters extends React.Component {
         productModels: null,
     };
 
+    onFilterButtonClick = (filterType, filter, isSelected, model) => {
+        let selectedArr = this.state.productModels[model].filters[filterType].selected;
+
+        if (isSelected) {
+            selectedArr.splice(selectedArr.indexOf(filter), 1);
+        } else {
+            selectedArr.push(filter);
+        }
+
+        this.setState((state) => ({
+            productModels: {
+                ...state.productModels,
+                [model]: {
+                    ...state.productModels[model],
+                    filters: {
+                        ...state.productModels[model].filters,
+                        [filterType]: {
+                            ...state.productModels[model].filters[filterType],
+                            selected: selectedArr,
+                        }
+                    }
+                }
+            }
+        }));
+    };
+
     componentDidMount() {
         const {location, setFileData} = this.props;
 
@@ -38,9 +64,6 @@ class Filters extends React.Component {
                             extra={`Produits séléctionnés: ${productModels[model].data.length}`}
                             key={model}
                         >
-                            {
-                                console.log(productModels[model].filters)
-                            }
                             <Row>
                                 <h3>{productModels[model].filters.COULEUR.title}</h3>
                                 <div>
@@ -48,6 +71,12 @@ class Filters extends React.Component {
                                         <Button
                                             type={productModels[model].filters.COULEUR.selected.includes(item) ? 'primary' : 'secondary'}
                                             style={{ margin: '2px' }}
+                                            onClick={() => this.onFilterButtonClick(
+                                                'COULEUR',
+                                                item,
+                                                productModels[model].filters.COULEUR.selected.includes(item),
+                                                model,
+                                            )}
                                         >
                                             {item}
                                         </Button>
@@ -62,6 +91,12 @@ class Filters extends React.Component {
                                         <Button
                                             type={productModels[model].filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item) ? 'primary' : 'secondary'}
                                             style={{ margin: '2px' }}
+                                            onClick={() => this.onFilterButtonClick(
+                                                'TYPE/ CATEGORIE PRODUIT',
+                                                item,
+                                                productModels[model].filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item),
+                                                model,
+                                            )}
                                         >
                                             {item}
                                         </Button>
@@ -77,6 +112,12 @@ class Filters extends React.Component {
                                             <Button
                                                 type={productModels[model].filters['TISSU/MATERIAU'].selected.includes(item) ? 'primary' : 'secondary'}
                                                 style={{ margin: '2px' }}
+                                                onClick={() => this.onFilterButtonClick(
+                                                    'TISSU/MATERIAU',
+                                                    item,
+                                                    productModels[model].filters['TISSU/MATERIAU'].selected.includes(item),
+                                                    model,
+                                                )}
                                             >
                                                 {item}
                                             </Button>
@@ -90,6 +131,12 @@ class Filters extends React.Component {
                                             <Button
                                                 type={productModels[model].filters['COULEUR PIEDS'].selected.includes(item) ? 'primary' : 'secondary'}
                                                 style={{ margin: '2px' }}
+                                                onClick={() => this.onFilterButtonClick(
+                                                    'COULEUR PIEDS',
+                                                    item,
+                                                    productModels[model].filters['COULEUR PIEDS'].selected.includes(item),
+                                                    model,
+                                                )}
                                             >
                                                 {item}
                                             </Button>
