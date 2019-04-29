@@ -7,18 +7,22 @@ const filters = {
     COULEUR: {
         title: 'Couleur',
         data: [],
+        selected: [],
     },
     'TYPE/ CATEGORIE PRODUIT': {
         title: 'Categorie',
         data: [],
+        selected: [],
     },
     'TISSU/MATERIAU': {
         title: 'Toucher',
         data: [],
+        selected: [],
     },
     'COULEUR PIEDS': {
         title: 'Couleur Pieds',
         data: [],
+        selected: [],
     },
 };
 
@@ -45,6 +49,7 @@ export default createSelector(
                 _.forEach(Object.keys(modelsWithData[item[colName]].filters), key => {
                     if (!modelsWithData[item[colName]].filters[key].data.includes(item[key])) {
                         modelsWithData[item[colName]].filters[key].data.push(item[key]);
+                        modelsWithData[item[colName]].filters[key].selected.push(item[key]);
                     }
                 });
             });

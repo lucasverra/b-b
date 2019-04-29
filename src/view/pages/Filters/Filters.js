@@ -14,6 +14,7 @@ class Filters extends React.Component {
 
     componentDidMount() {
         const {location, setFileData} = this.props;
+
         setFileData(location.state);
         this.setState({
             productModels: productModels(location.state),
