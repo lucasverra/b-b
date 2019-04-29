@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Skeleton} from 'antd';
+import {Card, Skeleton, Button, Col, Row} from 'antd';
 
 // redux
 import {connect} from 'react-redux';
@@ -27,8 +27,6 @@ class Filters extends React.Component {
 
         if (!productModels) return <Skeleton/>;
 
-        console.log(productModels);
-
         return (
             <div>
                 <h1>{file.brand[0]}</h1>
@@ -40,7 +38,65 @@ class Filters extends React.Component {
                             extra={productModels[model].data.length}
                             key={model}
                         >
-                            models
+                            {
+                                console.log(productModels[model].filters)
+                            }
+                            <Row>
+                                <h3>{productModels[model].filters.COULEUR.title}</h3>
+                                <div>
+                                    {productModels[model].filters.COULEUR.data.map(item => (
+                                        <Button
+                                            type={productModels[model].filters.COULEUR.selected.includes(item) ? 'primary' : 'secondary'}
+                                            style={{ margin: '2px' }}
+                                        >
+                                            {item}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </Row>
+                            <br/>
+                            <Row>
+                                <h3>{productModels[model].filters['TYPE/ CATEGORIE PRODUIT'].title}</h3>
+                                <div>
+                                    {productModels[model].filters['TYPE/ CATEGORIE PRODUIT'].data.map(item => (
+                                        <Button
+                                            type={productModels[model].filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item) ? 'primary' : 'secondary'}
+                                            style={{ margin: '2px' }}
+                                        >
+                                            {item}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </Row>
+                            <br/>
+                            <Row gutter={16}>
+                                <Col span={12}>
+                                    <h3>{productModels[model].filters['TISSU/MATERIAU'].title}</h3>
+                                    <div>
+                                        {productModels[model].filters['TISSU/MATERIAU'].data.map(item => (
+                                            <Button
+                                                type={productModels[model].filters['TISSU/MATERIAU'].selected.includes(item) ? 'primary' : 'secondary'}
+                                                style={{ margin: '2px' }}
+                                            >
+                                                {item}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </Col>
+                                <Col span={12}>
+                                    <h3>{productModels[model].filters['COULEUR PIEDS'].title}</h3>
+                                    <div>
+                                        {productModels[model].filters['COULEUR PIEDS'].data.map(item => (
+                                            <Button
+                                                type={productModels[model].filters['COULEUR PIEDS'].selected.includes(item) ? 'primary' : 'secondary'}
+                                                style={{ margin: '2px' }}
+                                            >
+                                                {item}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </Col>
+                            </Row>
                         </Card>
                     ))
                 }
