@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Skeleton, Button, Col, Row} from 'antd';
+import {Card, Skeleton, Button, Col, Row, Drawer} from 'antd';
 
 // redux
 import {connect} from 'react-redux';
@@ -100,6 +100,15 @@ class Filters extends React.Component {
                         </Card>
                     ))
                 }
+                <Drawer
+                    visible
+                    placement="bottom"
+                    mask={false}
+                    closable={false}
+                    height={80}
+                >
+                    <h3>TOTAL produits sélectionnes: {file.data.length}</h3>
+                </Drawer>
             </div>
         )
     }
