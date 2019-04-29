@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect'
 import _ from 'underscore';
 
-const data = ({file}) => file.data;
+const data = (file) => file.data;
 const colName = 'NOM  MODELE / MODEL NAME';
 
 export default createSelector(
