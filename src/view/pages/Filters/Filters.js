@@ -4,6 +4,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {setFileData} from '../../../redux/actions/actionCreators';
+import productModels from '../../../redux/selectors/productModels';
 
 class Filters extends React.Component {
     componentDidMount() {
@@ -12,12 +13,18 @@ class Filters extends React.Component {
     }
 
     render() {
+        console.log(this.props.productModels);
+
         return <div>filters</div>
     }
 }
+
+const mapStateToProps = (store) => ({
+    productModels: productModels(store)
+});
 
 const mapDispatchToProps = (dispatch) => ({
     setFileData: bindActionCreators(setFileData, dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(Filters);
+export default connect(mapStateToProps, mapDispatchToProps)(Filters);

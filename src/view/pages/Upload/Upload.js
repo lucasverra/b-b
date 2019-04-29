@@ -79,9 +79,6 @@ class Upload extends React.Component {
     render() {
         const {fileData, errors} = this.state;
 
-        console.log(fileData);
-        console.log(errors);
-
         return (
             <div>
                 <AntUpload.Dragger {...this.draggerConfig}>

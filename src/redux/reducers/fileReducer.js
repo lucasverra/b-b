@@ -7,7 +7,7 @@ export default (state = initialState, action) => {
         case actionTypes.SET_FILE_DATA:
             return {
                 ...state,
-                data: action.payload,
+                ...action.payload,
             };
         default:
             return state;
