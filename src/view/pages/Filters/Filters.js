@@ -11,9 +11,10 @@ import productModels from '../../../redux/selectors/productModels';
 class Filters extends React.Component {
     state = {
         productModels: null,
+        filteredData: null,
     };
 
-    onFilterButtonClick = (filterType, filter, isSelected, model) => {
+    onFilterButtonClick = async (filterType, filter, isSelected, model) => {
         const selectedArr = _.clone(this.state.productModels[model].filters[filterType].selected);
 
         if (isSelected) {
@@ -22,7 +23,7 @@ class Filters extends React.Component {
             selectedArr.push(filter);
         }
 
-        this.setState(st => ({
+        await this.setState(st => ({
             productModels: {
                 ...st.productModels,
                 [model]: {
@@ -38,7 +39,7 @@ class Filters extends React.Component {
             }
         }));
 
-        // this.runFilter();
+        this.runFilter();
     };
 
     runFilter = () => {
@@ -46,17 +47,19 @@ class Filters extends React.Component {
 
         const filteredData = _.filter(file.data, (item) => {
             const currentFilters = this.state.productModels[item['NOM  MODELE / MODEL NAME']].filters;
-            let isInFilteredArray = false;
+
+            let isInFilteredArray = 0;
             _.forEach(Object.keys(currentFilters), key => {
                 if (currentFilters[key].selected.includes(item[key])) {
-                    isInFilteredArray = true;
+                    isInFilteredArray += 1;
                 }
             });
-            return isInFilteredArray;
+
+            return Object.keys(currentFilters).length === isInFilteredArray;
         });
 
         this.setState({
-            productModels: productModels({data: filteredData}),
+            filteredData,
         })
     };
 
@@ -66,14 +69,15 @@ class Filters extends React.Component {
         setFileData(location.state);
         this.setState({
             productModels: productModels(location.state),
+            filteredData: location.state,
         })
     }
 
     render() {
         const {file} = this.props;
-        const {productModels} = this.state;
+        const {productModels, filteredData} = this.state;
 
-        if (!productModels) return <Skeleton/>;
+        if (!filteredData) return <Skeleton/>;
 
         return (
             <div>
@@ -176,7 +180,7 @@ class Filters extends React.Component {
                     closable={false}
                     height={80}
                 >
-                    <h3>TOTAL produits sélectionnes: {file.data.length}</h3>
+                    <h3>TOTAL produits sélectionnes: {filteredData.length || file.data.length}</h3>
                 </Drawer>
             </div>
         )
