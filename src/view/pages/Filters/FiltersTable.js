@@ -28,14 +28,14 @@ const columns = [
     },
 ];
 
-const FiltersTable = ({ dataSource }) => {
-    console.log(dataSource);
-    return (
-        <Table
-            dataSource={dataSource}
-            columns={columns}
-        />
-    )
-};
+const FiltersTable = ({ dataSource }) => (
+    <Table
+        dataSource={dataSource}
+        columns={columns}
+        pagination={{
+            showSizeChanger: true
+        }}
+    />
+);
 
 export default FiltersTable
