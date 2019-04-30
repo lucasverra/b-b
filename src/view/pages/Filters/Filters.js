@@ -8,6 +8,9 @@ import {bindActionCreators} from 'redux';
 import {setFileData} from '../../../redux/actions/actionCreators';
 import productModels from '../../../redux/selectors/productModels';
 
+// comps
+import FiltersTable from './FiltersTable';
+
 class Filters extends React.Component {
     state = {
         productModels: null,
@@ -78,7 +81,7 @@ class Filters extends React.Component {
         setFileData(location.state);
         this.setState({
             productModels: intialProductModels,
-            filteredData: location.state,
+            filteredData: location.state.data,
             modelsWithCounts: intialProductModels.modelsWithCounts,
         })
     }
@@ -90,7 +93,7 @@ class Filters extends React.Component {
         if (!filteredData) return <Skeleton/>;
 
         return (
-            <div>
+            <div style={{ paddingBottom: '150px' }}>
                 <h1>{file.brand[0]}</h1>
                 {
                     Object.keys(productModels.modelsWithData).map(model => (
@@ -183,6 +186,7 @@ class Filters extends React.Component {
                         </Card>
                     ))
                 }
+                <FiltersTable dataSource={filteredData}/>
                 <Drawer
                     visible
                     placement="bottom"
@@ -190,7 +194,7 @@ class Filters extends React.Component {
                     closable={false}
                     height={80}
                 >
-                    <h3>TOTAL produits sélectionnes: {filteredData.length || file.data.length}</h3>
+                    <h3>TOTAL produits sélectionnes: {filteredData.length}</h3>
                 </Drawer>
             </div>
         )
