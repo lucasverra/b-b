@@ -54,7 +54,10 @@ export default createSelector(
                 });
             });
 
-            return modelsWithData;
+            return {
+                modelsWithData,
+                modelsWithCounts,
+            };
         } else {
             return null;
         }
