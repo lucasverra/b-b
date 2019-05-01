@@ -1,5 +1,5 @@
-import React from 'react';
-import { Table } from 'antd';
+import React, { useState } from 'react';
+import { Table, Input, Icon } from 'antd';
 import _ from 'underscore';
 
 const dataIndexes = ['NO.', 'REFERENCES  B&B', 'NOM  MODELE / MODEL NAME', 'TYPE/ CATEGORIE PRODUIT', 'COULEUR', 'COULEUR PIEDS'];
@@ -7,7 +7,13 @@ const titles = ['#', 'CODE B&B', 'NOM', 'CATEGORIE', 'COULEUR', 'PIEDS'];
 const sorter = (a, b) => a > b ? -1 : 1;
 const filter = (val, record, col) => record[col] === val;
 
+const handleSearch = (confirm, val, setSelectedKeys) => {
+    setSelectedKeys([val]);
+    confirm();
+};
+
 const FiltersTable = ({ dataSource }) => {
+    const [searchVal, setSearchVal] = useState('');
     const filtersUniqueVals = {};
     _.forEach(dataIndexes.slice(1), (col, i) => {
         filtersUniqueVals[col] = _.countBy(dataSource, col);
@@ -24,6 +30,14 @@ const FiltersTable = ({ dataSource }) => {
             title: titles[1],
             sorter,
             width: '20%',
+            filterDropdown: ({confirm, setSelectedKeys}) => (
+                <Input.Search
+                    onChange={(e) => setSearchVal(e.target.value)}
+                    onSearch={() => handleSearch(confirm, searchVal, setSelectedKeys)}
+                />
+            ),
+            filterIcon: filtered => <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />,
+            onFilter: (value, record) => record[dataIndexes[1]].toUpperCase().includes(value.toUpperCase()),
         },
         {
             dataIndex: dataIndexes[2],
