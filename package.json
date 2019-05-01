@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn && yarn build && ./node_modules/serve/bin/serve.js -s build"
+    "deploy": "yarn && yarn build"
   },
   "eslintConfig": {
     "extends": "react-app"
