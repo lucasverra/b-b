@@ -2,6 +2,7 @@ import React from 'react';
 import {Upload as AntUpload, Icon, Button, Alert} from 'antd';
 import {read, utils} from 'xlsx';
 import _ from 'underscore';
+import localforage from 'localforage';
 
 // redux
 import {connect} from 'react-redux';
@@ -68,8 +69,15 @@ class Upload extends React.Component {
         const {history, setFileData} = this.props;
         const {fileData} = this.state;
 
-        setFileData(fileData);
-        history.push('/filters');
+        localforage.setItem('FILE', fileData, err => {
+           if (err) {
+               console.error(err)
+           } else {
+               setFileData(fileData);
+               history.push('/filters');
+           }
+
+        });
     };
 
     draggerConfig = {

@@ -1,10 +1,13 @@
 import React from 'react';
 import {Card, Skeleton, Button, Col, Row, Drawer} from 'antd';
 import _ from 'underscore';
+import localforage from 'localforage';
 
 // redux
 import {connect} from 'react-redux';
 import productModels from '../../../redux/selectors/productModels';
+import {setFileData} from '../../../redux/actions/actionCreators';
+import {bindActionCreators} from 'redux';
 
 // comps
 import FiltersTable from './FiltersTable';
@@ -75,23 +78,44 @@ class Filters extends React.Component {
     componentDidMount() {
         const {file} = this.props;
 
-        const intialProductModels = productModels(file);
-        this.setState({
-            productModels: intialProductModels,
-            filteredData: file.data,
-            modelsWithCounts: intialProductModels.modelsWithCounts,
-        });
+        if (!!Object.keys(file).length) {
+            const intialProductModels = productModels(file);
+            this.setState({
+                productModels: intialProductModels,
+                filteredData: file.data,
+                modelsWithCounts: intialProductModels.modelsWithCounts,
+                brand: file.brand[0],
+            });
+        } else {
+            localforage.getItem('FILE', (err, file) => {
+                if (err) {
+                    console.error(err)
+                } else {
+                    const { setFileData } = this.props;
+                    const intialProductModels = productModels(file);
+                    setFileData(file);
+
+                    this.setState({
+                        productModels: intialProductModels,
+                        filteredData: file.data,
+                        modelsWithCounts: intialProductModels.modelsWithCounts,
+                        brand: file.brand[0],
+                    });
+                }
+
+                localforage.clear(console.error)
+            });
+        }
     }
 
     render() {
-        const {file} = this.props;
-        const {productModels, filteredData, modelsWithCounts} = this.state;
+        const {productModels, filteredData, modelsWithCounts, brand} = this.state;
 
         if (!filteredData) return <Skeleton/>;
 
         return (
             <div style={{ paddingBottom: '150px' }}>
-                <h1>{file.brand[0]}</h1>
+                <h1>{brand}</h1>
                 {
                     Object.keys(productModels.modelsWithData).map(model => (
                         <Card
@@ -206,4 +230,8 @@ const mapStateToProps = (store) => ({
     file: store.file,
 });
 
-export default connect(mapStateToProps)(Filters);
+const mapDispatchToProps = (dispatch) => ({
+    setFileData: bindActionCreators(setFileData, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Filters);
