@@ -102,8 +102,6 @@ class Filters extends React.Component {
                         brand: file.brand[0],
                     });
                 }
-
-                localforage.clear(console.error)
             });
         }
     }

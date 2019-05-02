@@ -34,6 +34,7 @@ class Upload extends React.Component {
 
     componentDidMount() {
         reader.onSuccess = this.onFileUploadSuccess;
+        localforage.clear(console.error);
     }
 
     onFileUploadSuccess = (file) => {

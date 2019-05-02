@@ -63,8 +63,6 @@ export default createSelector(
                });
             });
 
-            console.log(modelsWithData);
-
             return {
                 modelsWithData,
                 modelsWithCounts,
