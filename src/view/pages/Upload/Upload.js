@@ -84,12 +84,14 @@ class Upload extends React.Component {
     draggerConfig = {
         name: 'file',
         multiple: false,
-        showUploadList: false,
         accept: '.xlsx',
-        action: (file) => {
-            reader.readAsBinaryString(file);
-        },
         onRemove: () => this.setState({fileData: null, errors: null}),
+        customRequest: ({ onSuccess, file,...args }) => {
+            reader.readAsBinaryString(file);
+            setTimeout(() => {
+                onSuccess(null, file);
+            }, 100);
+        },
     };
 
     render() {
