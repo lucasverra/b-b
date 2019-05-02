@@ -46,6 +46,33 @@ class Filters extends React.Component {
         this.runFilter();
     };
 
+    onRestart = async (model) => {
+        const filterTypes = ['COULEUR', 'TYPE/ CATEGORIE PRODUIT', 'TISSU/MATERIAU', 'COULEUR PIEDS'];
+
+        await _.forEach(filterTypes, async filterType => {
+            await this.setState(st => ({
+                productModels: {
+                    ...st.productModels,
+                    modelsWithData: {
+                        ...st.productModels.modelsWithData,
+                        [model]: {
+                            ...st.productModels.modelsWithData[model],
+                            filters: {
+                                ...st.productModels.modelsWithData[model].filters,
+                                [filterType]: {
+                                    ...st.productModels.modelsWithData[model].filters[filterType],
+                                    selected: st.productModels.modelsWithData[model].filters[filterType].data,
+                                }
+                            }
+                        }
+                    }
+                }
+            }));
+        });
+
+        this.runFilter();
+    };
+
     onFilter = async (filterType, filter, isSelected, model) => {
         const selectedArr = _.clone(this.state.productModels.modelsWithData[model].filters[filterType].selected);
 
@@ -149,7 +176,12 @@ class Filters extends React.Component {
                             extra={`Produits séléctionnés: ${modelsWithCounts[model] || 0}`}
                             key={model}
                         >
-                            <Card extra={<Icon type="close-circle" onClick={() => this.onClearAll(model)}/>}>
+                            <Card extra={
+                                <>
+                                    <Icon type="retweet" style={{ color: 'blue' }} onClick={() => this.onRestart(model)}/>
+                                    <Icon type="close-circle" style={{ color: 'red', marginLeft: '8px' }} onClick={() => this.onClearAll(model)}/>
+                                </>
+                            }>
                                 <Row>
                                     <h3>{productModels.modelsWithData[model].filters.COULEUR.title}</h3>
                                     <div>
