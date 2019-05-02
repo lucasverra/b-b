@@ -4,8 +4,6 @@ import _ from 'underscore';
 
 // redux
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {setFileData} from '../../../redux/actions/actionCreators';
 import productModels from '../../../redux/selectors/productModels';
 
 // comps
@@ -75,15 +73,14 @@ class Filters extends React.Component {
     };
 
     componentDidMount() {
-        const {location, setFileData} = this.props;
-        const intialProductModels = productModels(location.state);
+        const {file} = this.props;
 
-        setFileData(location.state);
+        const intialProductModels = productModels(file);
         this.setState({
             productModels: intialProductModels,
-            filteredData: location.state.data,
+            filteredData: file.data,
             modelsWithCounts: intialProductModels.modelsWithCounts,
-        })
+        });
     }
 
     render() {
@@ -110,6 +107,7 @@ class Filters extends React.Component {
                                         <Button
                                             type={productModels.modelsWithData[model].filters.COULEUR.selected.includes(item) ? 'primary' : 'secondary'}
                                             style={{margin: '2px'}}
+                                            key={item}
                                             onClick={() => this.onFilterButtonClick(
                                                 'COULEUR',
                                                 item,
@@ -130,6 +128,7 @@ class Filters extends React.Component {
                                         <Button
                                             type={productModels.modelsWithData[model].filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item) ? 'primary' : 'secondary'}
                                             style={{margin: '2px'}}
+                                            key={item}
                                             onClick={() => this.onFilterButtonClick(
                                                 'TYPE/ CATEGORIE PRODUIT',
                                                 item,
@@ -151,6 +150,7 @@ class Filters extends React.Component {
                                             <Button
                                                 type={productModels.modelsWithData[model].filters['TISSU/MATERIAU'].selected.includes(item) ? 'primary' : 'secondary'}
                                                 style={{margin: '2px'}}
+                                                key={item}
                                                 onClick={() => this.onFilterButtonClick(
                                                     'TISSU/MATERIAU',
                                                     item,
@@ -170,6 +170,7 @@ class Filters extends React.Component {
                                             <Button
                                                 type={productModels.modelsWithData[model].filters['COULEUR PIEDS'].selected.includes(item) ? 'primary' : 'secondary'}
                                                 style={{margin: '2px'}}
+                                                key={item}
                                                 onClick={() => this.onFilterButtonClick(
                                                     'COULEUR PIEDS',
                                                     item,
@@ -205,8 +206,4 @@ const mapStateToProps = (store) => ({
     file: store.file,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    setFileData: bindActionCreators(setFileData, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filters);
+export default connect(mapStateToProps)(Filters);

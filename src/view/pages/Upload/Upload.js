@@ -3,6 +3,12 @@ import {Upload as AntUpload, Icon, Button, Alert} from 'antd';
 import {read, utils} from 'xlsx';
 import _ from 'underscore';
 
+// redux
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {setFileData} from '../../../redux/actions/actionCreators';
+import productModels from '../../../redux/selectors/productModels';
+
 // other
 import validate from './validate';
 
@@ -60,10 +66,11 @@ class Upload extends React.Component {
     };
 
     onNext = () => {
-        const {history} = this.props;
+        const {history, setFileData} = this.props;
         const {fileData} = this.state;
 
-        history.push('/filters', fileData);
+        setFileData(fileData);
+        history.push('/filters');
     };
 
     draggerConfig = {
@@ -102,4 +109,8 @@ class Upload extends React.Component {
     }
 }
 
-export default Upload;
+const mapDispatchToProps = (dispatch) => ({
+    setFileData: bindActionCreators(setFileData, dispatch),
+});
+
+export default connect(null, mapDispatchToProps)(Upload);
