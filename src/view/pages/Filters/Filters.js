@@ -173,15 +173,18 @@ class Filters extends React.Component {
                         <Card
                             title={model}
                             style={{marginBottom: '8px'}}
-                            extra={`Produits séléctionnés: ${modelsWithCounts[model] || 0}`}
+                            // extra={}
                             key={model}
                         >
-                            <Card extra={
-                                <>
-                                    <Icon type="retweet" style={{ color: 'blue' }} onClick={() => this.onRestart(model)}/>
-                                    <Icon type="close-circle" style={{ color: 'red', marginLeft: '8px' }} onClick={() => this.onClearAll(model)}/>
-                                </>
-                            }>
+                            <Card
+                                title={`Produits séléctionnés: ${modelsWithCounts[model] || 0}`}
+                                extra={
+                                    <>
+                                        <Icon type="retweet" style={{ color: 'blue' }} onClick={() => this.onRestart(model)}/>
+                                        <Icon type="close-circle" style={{ color: 'red', marginLeft: '8px' }} onClick={() => this.onClearAll(model)}/>
+                                    </>
+                                }
+                            >
                                 <Row>
                                     <h3>{productModels.modelsWithData[model].filters.COULEUR.title}</h3>
                                     <div>
