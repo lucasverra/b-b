@@ -15,7 +15,7 @@ const handleSearch = (confirm, val, setSelectedKeys) => {
 const FiltersTable = ({ dataSource }) => {
     const [searchVal, setSearchVal] = useState('');
     const filtersUniqueVals = {};
-    _.forEach(dataIndexes.slice(1), (col, i) => {
+    _.forEach(dataIndexes.slice(1), col => {
         filtersUniqueVals[col] = _.countBy(dataSource, col);
     });
 

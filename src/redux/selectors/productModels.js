@@ -44,15 +44,26 @@ export default createSelector(
             // pass data into models
             _.forEach(data, item => {
                 modelsWithData[item[colName]].data.push(item);
-
-                // generate filters data
-                _.forEach(Object.keys(modelsWithData[item[colName]].filters), key => {
-                    if (!modelsWithData[item[colName]].filters[key].data.includes(item[key])) {
-                        modelsWithData[item[colName]].filters[key].data.push(item[key]);
-                        modelsWithData[item[colName]].filters[key].selected.push(item[key]);
-                    }
-                });
             });
+
+            // generate filters data
+            _.forEach(Object.keys(modelsWithData), (modelKey) => {
+               _.forEach(Object.keys(modelsWithData[modelKey].filters), (filterKey) => {
+                   const uniqueFilters = Object.keys(_.countBy(modelsWithData[modelKey].data, filterKey));
+                   modelsWithData[modelKey] = {
+                       ...modelsWithData[modelKey],
+                       filters: {
+                           ...modelsWithData[modelKey].filters,
+                           [filterKey]: {
+                               data: uniqueFilters,
+                               selected: uniqueFilters,
+                           }
+                       }
+                   };
+               });
+            });
+
+            console.log(modelsWithData);
 
             return {
                 modelsWithData,
