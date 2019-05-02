@@ -7,7 +7,6 @@ import _ from 'underscore';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {setFileData} from '../../../redux/actions/actionCreators';
-import productModels from '../../../redux/selectors/productModels';
 
 // other
 import validate from './validate';
@@ -76,6 +75,7 @@ class Upload extends React.Component {
     draggerConfig = {
         name: 'file',
         multiple: false,
+        showUploadList: false,
         accept: '.xlsx',
         action: (file) => {
             reader.readAsBinaryString(file);
