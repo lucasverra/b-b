@@ -17,6 +17,7 @@ class Filters extends React.Component {
         productModels: null,
         filteredData: null,
         modelsWithCounts: {},
+        additionalFilters: {},
     };
 
     onClearAll = async (model) => {
@@ -129,16 +130,48 @@ class Filters extends React.Component {
         })
     };
 
+    addNewFilter = (model) => {
+        console.log('add new filter', model);
+        console.log('add new filter', this.state.additionalFilters);
+        this.setState((state) => ({
+            additionalFilters: {
+                ...state.additionalFilters,
+                [model]: [
+                    ...state.additionalFilters[model],
+                    {
+                        key: state.additionalFilters[model].length,
+                    }
+                ],
+            }
+        }))
+    };
+
+    removeFilter = (model, filterKey) => {
+        this.setState((state) => ({
+            additionalFilters: {
+                ...state.additionalFilters,
+                [model]: _.filter(state.additionalFilters[model], filter => filter.key !== filterKey),
+            }
+        }));
+    };
+
     componentDidMount() {
         const {file} = this.props;
 
         if (!!Object.keys(file).length) {
             const intialProductModels = productModels(file);
+            const additionalFilters = {};
+
+            _.forEach(Object.keys(intialProductModels.modelsWithCounts), key => {
+               additionalFilters[key] = [];
+            });
+
             this.setState({
                 productModels: intialProductModels,
                 filteredData: file.data,
                 modelsWithCounts: intialProductModels.modelsWithCounts,
                 brand: file.brand[0],
+                additionalFilters,
             });
         } else {
             localforage.getItem('FILE', (err, file) => {
@@ -147,6 +180,12 @@ class Filters extends React.Component {
                 } else {
                     const { setFileData } = this.props;
                     const intialProductModels = productModels(file);
+                    const additionalFilters = {};
+
+                    _.forEach(Object.keys(intialProductModels.modelsWithCounts), key => {
+                        additionalFilters[key] = [];
+                    });
+
                     setFileData(file);
 
                     this.setState({
@@ -154,6 +193,7 @@ class Filters extends React.Component {
                         filteredData: file.data,
                         modelsWithCounts: intialProductModels.modelsWithCounts,
                         brand: file.brand[0],
+                        additionalFilters,
                     });
                 }
             });
@@ -161,7 +201,9 @@ class Filters extends React.Component {
     }
 
     render() {
-        const {productModels, filteredData, modelsWithCounts, brand} = this.state;
+        const {
+            productModels, filteredData, modelsWithCounts, brand, additionalFilters,
+        } = this.state;
 
         if (!filteredData) return <Skeleton/>;
 
@@ -173,7 +215,6 @@ class Filters extends React.Component {
                         <Card
                             title={model}
                             style={{marginBottom: '8px'}}
-                            // extra={}
                             key={model}
                         >
                             <Card
@@ -181,7 +222,7 @@ class Filters extends React.Component {
                                 extra={
                                     <>
                                         <Icon type="retweet" style={{ color: 'blue' }} onClick={() => this.onRestart(model)}/>
-                                        <Icon type="close-circle" style={{ color: 'red', marginLeft: '8px' }} onClick={() => this.onClearAll(model)}/>
+                                        <Icon type="close-circle" style={{ color: 'orange', marginLeft: '8px' }} onClick={() => this.onClearAll(model)}/>
                                     </>
                                 }
                             >
@@ -270,6 +311,113 @@ class Filters extends React.Component {
                                     </Col>
                                 </Row>
                             </Card>
+                            {
+                                additionalFilters[model].map((additionalFilter) => (
+                                    <Card
+                                        title={`Produits séléctionnés: ${modelsWithCounts[model] || 0}`}
+                                        style={{ marginTop: '16px' }}
+                                        extra={
+                                            <>
+                                                <Icon type="retweet" style={{ color: 'blue' }} onClick={() => this.onRestart(model)}/>
+                                                <Icon type="close-circle" style={{ color: 'orange', marginLeft: '8px' }} onClick={() => this.onClearAll(model)}/>
+                                                <Icon type="delete" style={{ color: 'red', marginLeft: '8px' }} onClick={() => this.removeFilter(model, additionalFilter.key)}/>
+                                            </>
+                                        }
+                                    >
+                                        <Row>
+                                            <h3>{productModels.modelsWithData[model].filters.COULEUR.title}</h3>
+                                            <div>
+                                                {productModels.modelsWithData[model].filters.COULEUR.data.map(item => (
+                                                    <Button
+                                                        type={productModels.modelsWithData[model].filters.COULEUR.selected.includes(item) ? 'primary' : 'secondary'}
+                                                        style={{margin: '2px'}}
+                                                        key={item}
+                                                        onClick={() => this.onFilter(
+                                                            'COULEUR',
+                                                            item,
+                                                            productModels.modelsWithData[model].filters.COULEUR.selected.includes(item),
+                                                            model,
+                                                        )}
+                                                    >
+                                                        {item}
+                                                    </Button>
+                                                ))}
+                                            </div>
+                                        </Row>
+                                        <br/>
+                                        <Row>
+                                            <h3>{productModels.modelsWithData[model].filters['TYPE/ CATEGORIE PRODUIT'].title}</h3>
+                                            <div>
+                                                {productModels.modelsWithData[model].filters['TYPE/ CATEGORIE PRODUIT'].data.map(item => (
+                                                    <Button
+                                                        type={productModels.modelsWithData[model].filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item) ? 'primary' : 'secondary'}
+                                                        style={{margin: '2px'}}
+                                                        key={item}
+                                                        onClick={() => this.onFilter(
+                                                            'TYPE/ CATEGORIE PRODUIT',
+                                                            item,
+                                                            productModels.modelsWithData[model].filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item),
+                                                            model,
+                                                        )}
+                                                    >
+                                                        {item}
+                                                    </Button>
+                                                ))}
+                                            </div>
+                                        </Row>
+                                        <br/>
+                                        <Row gutter={16}>
+                                            <Col span={12}>
+                                                <h3>{productModels.modelsWithData[model].filters['TISSU/MATERIAU'].title}</h3>
+                                                <div>
+                                                    {productModels.modelsWithData[model].filters['TISSU/MATERIAU'].data.map(item => (
+                                                        <Button
+                                                            type={productModels.modelsWithData[model].filters['TISSU/MATERIAU'].selected.includes(item) ? 'primary' : 'secondary'}
+                                                            style={{margin: '2px'}}
+                                                            key={item}
+                                                            onClick={() => this.onFilter(
+                                                                'TISSU/MATERIAU',
+                                                                item,
+                                                                productModels.modelsWithData[model].filters['TISSU/MATERIAU'].selected.includes(item),
+                                                                model,
+                                                            )}
+                                                        >
+                                                            {item}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                            </Col>
+                                            <Col span={12}>
+                                                <h3>{productModels.modelsWithData[model].filters['COULEUR PIEDS'].title}</h3>
+                                                <div>
+                                                    {productModels.modelsWithData[model].filters['COULEUR PIEDS'].data.map(item => (
+                                                        <Button
+                                                            type={productModels.modelsWithData[model].filters['COULEUR PIEDS'].selected.includes(item) ? 'primary' : 'secondary'}
+                                                            style={{margin: '2px'}}
+                                                            key={item}
+                                                            onClick={() => this.onFilter(
+                                                                'COULEUR PIEDS',
+                                                                item,
+                                                                productModels.modelsWithData[model].filters['COULEUR PIEDS'].selected.includes(item),
+                                                                model,
+                                                            )}
+                                                        >
+                                                            {item}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                ))
+                            }
+                            <Button
+                                type="dashed"
+                                size="large"
+                                icon="plus-circle"
+                                style={{ width: '100%', marginTop: '16px' }}
+                                onClick={() => this.addNewFilter(model)}
+                            />
                         </Card>
                     ))
                 }
