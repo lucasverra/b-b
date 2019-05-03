@@ -57,6 +57,7 @@ export default createSelector(
                            [filterKey]: {
                                data: uniqueFilters,
                                selected: uniqueFilters,
+                               title: filters[filterKey].title,
                            }
                        }
                    };
