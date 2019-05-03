@@ -30,6 +30,7 @@ class Upload extends React.Component {
     state = {
         fileData: null,
         errors: null,
+        antFileList: [],
     };
 
     componentDidMount() {
@@ -86,20 +87,32 @@ class Upload extends React.Component {
         multiple: false,
         accept: '.xlsx',
         onRemove: () => this.setState({fileData: null, errors: null}),
-        customRequest: ({ onSuccess, file,...args }) => {
+        customRequest: ({ onSuccess, file }) => {
             reader.readAsBinaryString(file);
+            this.setState({
+                antFileList: [{
+                    uid: file.uid,
+                    name: file.name,
+                    status: 'done',
+                }]
+            });
             setTimeout(() => {
                 onSuccess(null, file);
             }, 100);
         },
+        beforeUpload: () => {
+            setTimeout(() => {
+                this.setState({fileData: null, errors: null});
+            }, 1)
+        },
     };
 
     render() {
-        const {fileData, errors} = this.state;
+        const {fileData, errors, antFileList} = this.state;
 
         return (
             <div>
-                <AntUpload.Dragger {...this.draggerConfig}>
+                <AntUpload.Dragger fileList={antFileList} {...this.draggerConfig}>
                     <p className="ant-upload-drag-icon">
                         <Icon type="inbox"/>
                     </p>
