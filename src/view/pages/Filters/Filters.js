@@ -208,13 +208,13 @@ class Filters extends React.Component {
         if (!filteredData) return <Skeleton/>;
 
         return (
-            <div style={{ paddingBottom: '150px' }}>
+            <Col style={{ paddingBottom: '150px' }} span={20} offset={2}>
                 <h1>{brand}</h1>
                 {
                     Object.keys(productModels.modelsWithData).map(model => (
                         <Card
                             title={model}
-                            style={{marginBottom: '8px'}}
+                            style={{marginBottom: '16px', backgroundColor: '#efefef'}}
                             key={model}
                         >
                             <Card
@@ -431,7 +431,7 @@ class Filters extends React.Component {
                 >
                     <h3>TOTAL produits sélectionnes: {filteredData.length}</h3>
                 </Drawer>
-            </div>
+            </Col>
         )
     }
 }
