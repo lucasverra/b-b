@@ -130,8 +130,21 @@ class Filters extends React.Component {
         })
     };
 
-    onAdditionalFilter = (filterType, filter, isSelected, model, filterKey) => {
-        const { additionalFilters } = this.state;
+    countInProductModelByFilter = (filters, modelData) => {
+        return  _.filter(modelData, (item) => {
+            let isInFilteredArray = 0;
+            _.forEach(Object.keys(filters), key => {
+                if (filters[key].selected.includes(item[key])) {
+                    isInFilteredArray += 1;
+                }
+            });
+
+            return Object.keys(filters).length === isInFilteredArray;
+        }).length;
+    };
+
+    onAdditionalFilter = async (filterType, filter, isSelected, model, filterKey) => {
+        const { additionalFilters, productModels } = this.state;
 
         const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
            if (oneFilter.key !== filterKey) {
@@ -144,13 +157,18 @@ class Filters extends React.Component {
                 updatedOneFilter.filters[filterType].selected.push(filter);
             }
 
-            return updatedOneFilter;
+            const productCount = this.countInProductModelByFilter(updatedOneFilter.filters, productModels.modelsWithData[model].data);
+
+            return {
+                ...updatedOneFilter,
+                productCount,
+            };
         });
 
-        this.setState((st) => ({
+        await this.setState((st) => ({
             additionalFilters: {
                 ...st.additionalFilters,
-                [model]: updatedModelAdditionalFilters
+                [model]: updatedModelAdditionalFilters,
             }
         }));
     };
@@ -239,8 +257,6 @@ class Filters extends React.Component {
         } = this.state;
 
         if (!filteredData) return <Skeleton/>;
-
-        console.log(additionalFilters);
 
         return (
             <Col style={{ paddingBottom: '150px' }} span={20} offset={2}>
