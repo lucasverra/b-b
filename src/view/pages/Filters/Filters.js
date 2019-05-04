@@ -173,7 +173,7 @@ class Filters extends React.Component {
         }));
     };
 
-    onAdditionalFilterClearAll = (model, filterKey) => {
+    toggleAllAdditionalFilter = (model, filterKey, showAll) => {
         const { additionalFilters, productModels } = this.state;
 
         const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
@@ -183,10 +183,10 @@ class Filters extends React.Component {
             const updatedFiltersValues = {};
 
             _.forEach(Object.keys(oneFilter.filters), oneFilterKey => {
-               updatedFiltersValues[oneFilterKey] = {
-                   ...oneFilter.filters[oneFilterKey],
-                   selected: [],
-               }
+                updatedFiltersValues[oneFilterKey] = {
+                    ...oneFilter.filters[oneFilterKey],
+                    selected: showAll ? oneFilter.filters[oneFilterKey].data : [],
+                }
             });
 
             const updatedOneFilter = {
@@ -208,31 +208,6 @@ class Filters extends React.Component {
                 [model]: updatedModelAdditionalFilters,
             }
         }));
-    };
-
-    onAdditionalRestart = async (model, filterKey) => {
-        const { additionalFilters } = this.state;
-        const filterTypes = ['COULEUR', 'TYPE/ CATEGORIE PRODUIT', 'TISSU/MATERIAU', 'COULEUR PIEDS'];
-
-        console.log(additionalFilters[model]);
-        console.log(filterKey);
-
-        const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
-            if (oneFilter.key !== filterKey) {
-                return oneFilter;
-            }
-            const updatedOneFilter = {
-                ...oneFilter,
-                selected: []
-            };
-
-            const productCount = this.countInProductModelByFilter(updatedOneFilter.filters, productModels.modelsWithData[model].data);
-
-            return {
-                ...updatedOneFilter,
-                productCount,
-            };
-        });
     };
 
     addNewFilter = (model, modelFilters) => {
@@ -434,17 +409,16 @@ class Filters extends React.Component {
                                                 <Icon
                                                     type="retweet"
                                                     style={{ color: 'blue' }}
-                                                    onClick={() => this.onAdditionalRestart(model, additionalFilter.key)}
+                                                    onClick={() => this.toggleAllAdditionalFilter(model, additionalFilter.key, true)}
                                                 />
                                                 <Icon
                                                     type="close-circle"
                                                     style={{ color: 'orange', marginLeft: '8px' }}
-                                                    onClick={() => this.onAdditionalFilterClearAll(model, additionalFilter.key)}
+                                                    onClick={() => this.toggleAllAdditionalFilter(model, additionalFilter.key, false)}
                                                 />
                                                 <Icon type="delete" style={{ color: 'red', marginLeft: '8px' }} onClick={() => this.removeFilter(model, additionalFilter.key)}/>
                                             </>
-                                        }
-                                    >
+                                        }                                    >
                                         <Row>
                                             <h3>{additionalFilter.filters.COULEUR.title}</h3>
                                             <div>
