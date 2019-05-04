@@ -9,44 +9,44 @@ export default (data) => {
 
     // unique records
     if (!isAllEanUnique){
-        errors.nonUniqueEan = 'EAN must be unique';
+        errors.nonUniqueEan = 'La colonne EAN a des éléments égaux';
     }
     if (!isAllLinkPhotoUnique){
-        errors.nonUniqueLink = 'LINK PHOTO must be unique';
+        errors.nonUniqueLink = 'La colonne LINK PHOTO a des éléments égaux';
     }
     if (!isAllReferencesBBUnique){
-        errors.nonUniqueReferences = 'REFERENCES  B&B must be unique';
+        errors.nonUniqueReferences = 'La colonne REFERENCES  B&B a des éléments égaux';
     }
 
     _.forEach(data, (item) => {
         // required
         if (!item['LINK PHOTO']) {
-            errors.linkPhoto = 'LINK PHOTO required';
+            errors.linkPhoto = 'La colonne LINK PHOTO n’est pas complète.';
         }
         if (!item['MARQUE / BRAND']) {
-            errors.marqueBrand = 'Marque / Brand Required'
+            errors.marqueBrand = 'La colonne Marque / Brand n’est pas complète.'
         }
         if (!item['REFERENCES  B&B']) {
-            errors.referencesBB = 'REFERENCES B&B Required';
+            errors.referencesBB = 'La colonne REFERENCES B&B n’est pas complète.';
         }
         if (!item['EAN']) {
-            errors.ean = 'EAN required';
+            errors.ean = 'La colonne EAN n’est pas complète.';
         }
         if (!item['COULEUR']) {
-            errors.couleur = 'Couleur required';
+            errors.couleur = 'La colonne Couleur n’est pas complète.';
         }
         if (!item['TISSU/MATERIAU']) {
-            errors.tissuMateriau = 'TISSU/MATERIAU required';
+            errors.tissuMateriau = 'La colonne TISSU/MATERIAU n’est pas complète.';
         }
         if (!item['NOM  MODELE / MODEL NAME']) {
-            errors.modelName = 'NOM  MODELE / MODEL NAME required';
+            errors.modelName = 'La colonne NOM  MODELE / MODEL NAME n’est pas complète.';
         }
         if (!item['TYPE/ CATEGORIE PRODUIT']) {
-            errors.type = 'TYPE/ CATEGORIE PRODUIT required';
+            errors.type = 'La colonne TYPE/ CATEGORIE PRODUIT n’est pas complète.';
         }
         // other
         if (item['MARQUE / BRAND'] && item['MARQUE / BRAND'] !== marque) {
-            errors.brandTheSame = 'Brand must be the same';
+            errors.brandTheSame = 'La colonne MARQUE / BRAND possède plus d’une valeur.e';
         }
     });
 
