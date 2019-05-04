@@ -9,6 +9,7 @@ import Router from './router';
 
 // css
 import 'antd/dist/antd.css';
+import './app.css';
 
 function App() {
     return (

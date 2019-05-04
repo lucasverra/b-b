@@ -1,5 +1,5 @@
 import React from 'react';
-import {Upload as AntUpload, Icon, Button, Alert} from 'antd';
+import {Upload as AntUpload, Icon, Button, Alert, Col, Row, Card} from 'antd';
 import {read, utils} from 'xlsx';
 import _ from 'underscore';
 import localforage from 'localforage';
@@ -8,6 +8,9 @@ import localforage from 'localforage';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {setFileData} from '../../../redux/actions/actionCreators';
+
+// comps
+import Header from '../../components/Header';
 
 // other
 import validate from './validate';
@@ -112,22 +115,53 @@ class Upload extends React.Component {
 
         return (
             <div>
-                <AntUpload.Dragger fileList={antFileList} {...this.draggerConfig}>
-                    <p className="ant-upload-drag-icon">
-                        <Icon type="inbox"/>
-                    </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                </AntUpload.Dragger>
-                <br/>
-                {
-                    fileData && !errors && <Button type="primary" onClick={this.onNext}>Next</Button>
-                }
-                <br/>
-                {
-                    errors && Object.keys(errors).map(error => (
-                        <Alert style={{marginBottom: '8px'}} key={error} message={errors[error]} type="error"/>
-                    ))
-                }
+                <Header />
+                <Row style={{ padding: '80px 0' }}>
+                    <Col span={14} offset={5}>
+                        <Card>
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <AntUpload.Dragger fileList={antFileList} {...this.draggerConfig}>
+                                        <Icon
+                                            type="plus-circle"
+                                            style={{
+                                                fontSize: '40px',
+                                                color: '#79B2FF',
+                                                marginTop: '40px',
+                                                marginBottom: '24px',
+                                            }}
+                                        />
+                                        <h3>Glissez et déposez vos fichiers Excel</h3>
+                                        <p>ou cliquez sur le bouton pour télécharger</p>
+                                        <br/>
+                                        <Button
+                                            type="primary"
+                                            style={{
+                                                marginBottom: '40px',
+                                            }}
+                                        >
+                                            Checher Fichier
+                                        </Button>
+                                    </AntUpload.Dragger>
+                                </Col>
+                                <Col span={12}>
+                                    <h1>Glissez vos fichiers simplement</h1>
+                                    <p>Glissez ou ajoutez vos fichiers d'offre simplement. Pour éviter toute erreur de lecture veuillez vérifier que toutes les colonnes soient complètes, que tous les EAN / LINK PHOTO / REFERENCE B&B soient différents et que tous les éléments de MARQUE / BRAND soient le même.</p>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <br/>
+                        {
+                            fileData && !errors && <Button type="primary" onClick={this.onNext} size="large" style={{ width: '100%' }}>Next</Button>
+                        }
+                        <br/>
+                        {
+                            errors && Object.keys(errors).map(error => (
+                                <Alert style={{marginBottom: '8px'}} key={error} message={errors[error]} type="error"/>
+                            ))
+                        }
+                    </Col>
+                </Row>
             </div>
         )
     }
