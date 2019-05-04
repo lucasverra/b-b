@@ -130,6 +130,31 @@ class Filters extends React.Component {
         })
     };
 
+    onAdditionalFilter = (filterType, filter, isSelected, model, filterKey) => {
+        const { additionalFilters } = this.state;
+
+        const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
+           if (oneFilter.key !== filterKey) {
+               return oneFilter;
+           }
+            const updatedOneFilter = {...oneFilter};
+            if (isSelected) {
+                updatedOneFilter.filters[filterType].selected.splice(updatedOneFilter.filters[filterType].selected.indexOf(filter), 1);
+            } else {
+                updatedOneFilter.filters[filterType].selected.push(filter);
+            }
+
+            return updatedOneFilter;
+        });
+
+        this.setState((st) => ({
+            additionalFilters: {
+                ...st.additionalFilters,
+                [model]: updatedModelAdditionalFilters
+            }
+        }));
+    };
+
     addNewFilter = (model, modelFilters) => {
         const filters = {};
         _.forEach(Object.keys(modelFilters), filterKey => {
@@ -146,6 +171,7 @@ class Filters extends React.Component {
                     ...state.additionalFilters[model],
                     {
                         key: state.additionalFilters[model].length,
+                        productCount: 0,
                         filters,
                     }
                 ],
@@ -323,7 +349,7 @@ class Filters extends React.Component {
                             {
                                 additionalFilters[model].map((additionalFilter) => (
                                     <Card
-                                        title={`Produits séléctionnés: ${modelsWithCounts[model] || 0}`}
+                                        title={`Produits séléctionnés: ${additionalFilter.productCount}`}
                                         style={{ marginTop: '16px' }}
                                         extra={
                                             <>
@@ -341,11 +367,12 @@ class Filters extends React.Component {
                                                         type={additionalFilter.filters.COULEUR.selected.includes(item) ? 'primary' : 'secondary'}
                                                         style={{margin: '2px'}}
                                                         key={item}
-                                                        onClick={() => this.onFilter(
+                                                        onClick={() => this.onAdditionalFilter(
                                                             'COULEUR',
                                                             item,
                                                             additionalFilter.filters.COULEUR.selected.includes(item),
                                                             model,
+                                                            additionalFilter.key,
                                                         )}
                                                     >
                                                         {item}
@@ -362,11 +389,12 @@ class Filters extends React.Component {
                                                         type={additionalFilter.filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item) ? 'primary' : 'secondary'}
                                                         style={{margin: '2px'}}
                                                         key={item}
-                                                        onClick={() => this.onFilter(
+                                                        onClick={() => this.onAdditionalFilter(
                                                             'TYPE/ CATEGORIE PRODUIT',
                                                             item,
                                                             additionalFilter.filters['TYPE/ CATEGORIE PRODUIT'].selected.includes(item),
                                                             model,
+                                                            additionalFilter.key,
                                                         )}
                                                     >
                                                         {item}
@@ -384,11 +412,12 @@ class Filters extends React.Component {
                                                             type={additionalFilter.filters['TISSU/MATERIAU'].selected.includes(item) ? 'primary' : 'secondary'}
                                                             style={{margin: '2px'}}
                                                             key={item}
-                                                            onClick={() => this.onFilter(
+                                                            onClick={() => this.onAdditionalFilter(
                                                                 'TISSU/MATERIAU',
                                                                 item,
                                                                 additionalFilter.filters['TISSU/MATERIAU'].selected.includes(item),
                                                                 model,
+                                                                additionalFilter.key,
                                                             )}
                                                         >
                                                             {item}
@@ -404,11 +433,12 @@ class Filters extends React.Component {
                                                             type={additionalFilter.filters['COULEUR PIEDS'].selected.includes(item) ? 'primary' : 'secondary'}
                                                             style={{margin: '2px'}}
                                                             key={item}
-                                                            onClick={() => this.onFilter(
+                                                            onClick={() => this.onAdditionalFilter(
                                                                 'COULEUR PIEDS',
                                                                 item,
                                                                 additionalFilter.filters['COULEUR PIEDS'].selected.includes(item),
                                                                 model,
+                                                                additionalFilter.key,
                                                             )}
                                                         >
                                                             {item}
