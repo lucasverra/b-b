@@ -33,7 +33,7 @@ class Upload extends React.Component {
     state = {
         fileData: null,
         errors: null,
-        antFileList: [],
+        antFileList
     };
 
     componentDidMount() {
@@ -89,7 +89,7 @@ class Upload extends React.Component {
         name: 'file',
         multiple: false,
         accept: '.xlsx',
-        onRemove: () => this.setState({fileData: null, errors: null}),
+        onRemove: () => this.setState({fileData: null, errors: null, antFileList: []}),
         customRequest: ({ onSuccess, file }) => {
             reader.readAsBinaryString(file);
             this.setState({
