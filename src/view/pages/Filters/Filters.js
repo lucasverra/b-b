@@ -143,7 +143,7 @@ class Filters extends React.Component {
         }).length;
     };
 
-    onAdditionalFilter = async (filterType, filter, isSelected, model, filterKey) => {
+    onAdditionalFilter = (filterType, filter, isSelected, model, filterKey) => {
         const { additionalFilters, productModels } = this.state;
 
         const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
@@ -165,12 +165,74 @@ class Filters extends React.Component {
             };
         });
 
-        await this.setState((st) => ({
+        this.setState((st) => ({
             additionalFilters: {
                 ...st.additionalFilters,
                 [model]: updatedModelAdditionalFilters,
             }
         }));
+    };
+
+    onAdditionalFilterClearAll = (model, filterKey) => {
+        const { additionalFilters, productModels } = this.state;
+
+        const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
+            if (oneFilter.key !== filterKey) {
+                return oneFilter;
+            }
+            const updatedFiltersValues = {};
+
+            _.forEach(Object.keys(oneFilter.filters), oneFilterKey => {
+               updatedFiltersValues[oneFilterKey] = {
+                   ...oneFilter.filters[oneFilterKey],
+                   selected: [],
+               }
+            });
+
+            const updatedOneFilter = {
+                ...oneFilter,
+                filters: updatedFiltersValues,
+            };
+
+            const productCount = this.countInProductModelByFilter(updatedOneFilter.filters, productModels.modelsWithData[model].data);
+
+            return {
+                ...updatedOneFilter,
+                productCount,
+            };
+        });
+
+        this.setState((st) => ({
+            additionalFilters: {
+                ...st.additionalFilters,
+                [model]: updatedModelAdditionalFilters,
+            }
+        }));
+    };
+
+    onAdditionalRestart = async (model, filterKey) => {
+        const { additionalFilters } = this.state;
+        const filterTypes = ['COULEUR', 'TYPE/ CATEGORIE PRODUIT', 'TISSU/MATERIAU', 'COULEUR PIEDS'];
+
+        console.log(additionalFilters[model]);
+        console.log(filterKey);
+
+        const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
+            if (oneFilter.key !== filterKey) {
+                return oneFilter;
+            }
+            const updatedOneFilter = {
+                ...oneFilter,
+                selected: []
+            };
+
+            const productCount = this.countInProductModelByFilter(updatedOneFilter.filters, productModels.modelsWithData[model].data);
+
+            return {
+                ...updatedOneFilter,
+                productCount,
+            };
+        });
     };
 
     addNewFilter = (model, modelFilters) => {
@@ -369,8 +431,16 @@ class Filters extends React.Component {
                                         style={{ marginTop: '16px' }}
                                         extra={
                                             <>
-                                                <Icon type="retweet" style={{ color: 'blue' }} onClick={() => this.onRestart(model)}/>
-                                                <Icon type="close-circle" style={{ color: 'orange', marginLeft: '8px' }} onClick={() => this.onClearAll(model)}/>
+                                                <Icon
+                                                    type="retweet"
+                                                    style={{ color: 'blue' }}
+                                                    onClick={() => this.onAdditionalRestart(model, additionalFilter.key)}
+                                                />
+                                                <Icon
+                                                    type="close-circle"
+                                                    style={{ color: 'orange', marginLeft: '8px' }}
+                                                    onClick={() => this.onAdditionalFilterClearAll(model, additionalFilter.key)}
+                                                />
                                                 <Icon type="delete" style={{ color: 'red', marginLeft: '8px' }} onClick={() => this.removeFilter(model, additionalFilter.key)}/>
                                             </>
                                         }
