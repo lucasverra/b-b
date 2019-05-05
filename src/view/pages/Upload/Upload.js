@@ -14,6 +14,8 @@ import Header from '../../components/Header';
 
 // other
 import validate from './validate';
+import sillon from '../../../assets/sillon.png';
+import jajka from '../../../assets/jajka.png';
 
 const reader = new FileReader();
 
@@ -116,7 +118,11 @@ class Upload extends React.Component {
         return (
             <div>
                 <Header />
-                <Row style={{ padding: '80px 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', padding: '0 80px', marginTop: "16px" }}>
+                    <img src={sillon} style={{ height: '50px', marginRight: '12px' }} />
+                    <h2 style={{ margin: '10px 0 0 0', fontWeight: 'lighter' }}><b>b&b</b> upload</h2>
+                </div>
+                <Row style={{ padding: '40px 80px' }}>
                     <Col span={14} offset={5}>
                         <Card>
                             <Row gutter={24}>
@@ -125,9 +131,9 @@ class Upload extends React.Component {
                                         <Icon
                                             type="plus-circle"
                                             style={{
-                                                fontSize: '40px',
+                                                fontSize: '50px',
                                                 color: '#79B2FF',
-                                                marginTop: '40px',
+                                                marginTop: '60px',
                                                 marginBottom: '24px',
                                             }}
                                         />
@@ -137,7 +143,7 @@ class Upload extends React.Component {
                                         <Button
                                             type="primary"
                                             style={{
-                                                marginBottom: '40px',
+                                                marginBottom: '120px',
                                             }}
                                         >
                                             Checher Fichier
@@ -145,8 +151,10 @@ class Upload extends React.Component {
                                     </AntUpload.Dragger>
                                 </Col>
                                 <Col span={12}>
-                                    <h1>Glissez vos fichiers simplement</h1>
+                                    <h2>Glissez vos fichiers simplement</h2>
                                     <p>Glissez ou ajoutez vos fichiers d'offre simplement. Pour éviter toute erreur de lecture veuillez vérifier que toutes les colonnes soient complètes, que tous les EAN / LINK PHOTO / REFERENCE B&B soient différents et que tous les éléments de MARQUE / BRAND soient le même.</p>
+                                    <br />
+                                    <img src={jajka} style={{ width: '100%' }}/>
                                 </Col>
                             </Row>
                         </Card>
