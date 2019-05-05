@@ -123,7 +123,7 @@ class Upload extends React.Component {
                     <h2 style={{ margin: '10px 0 0 0', fontWeight: 'lighter' }}><b>b&b</b> upload</h2>
                 </div>
                 <Row style={{ padding: '40px 80px' }}>
-                    <Col span={14} offset={5}>
+                    <Col span={16} offset={4}>
                         <Card>
                             <Row gutter={24}>
                                 <Col span={12}>
@@ -160,7 +160,14 @@ class Upload extends React.Component {
                         </Card>
                         <br/>
                         {
-                            fileData && !errors && <Button type="primary" onClick={this.onNext} size="large" style={{ width: '100%' }}>Suivant</Button>
+                            fileData && !errors && <Button
+                                type="primary"
+                                onClick={this.onNext}
+                                size="large"
+                                style={{ width: '100%', backgroundColor: '#00C851', borderColor: '#00C851' }}
+                            >
+                                Suivant
+                            </Button>
                         }
                         <br/>
                         {
