@@ -77,6 +77,7 @@ const FiltersTable = ({ dataSource }) => {
         <Table
             dataSource={dataSource}
             columns={columns}
+            style={{ backgroundColor: 'white', border: '1px solid #efefef' }}
             pagination={{
                 showSizeChanger: true
             }}
