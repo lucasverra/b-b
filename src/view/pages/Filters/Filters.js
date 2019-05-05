@@ -311,6 +311,7 @@ class Filters extends React.Component {
             this.setState({
                 productModels: intialProductModels,
                 filteredData: file.data,
+                mergedFiltersData: file.data,
                 modelsWithCounts: intialProductModels.modelsWithCounts,
                 brand: file.brand[0],
                 additionalFilters,
@@ -333,6 +334,7 @@ class Filters extends React.Component {
                     this.setState({
                         productModels: intialProductModels,
                         filteredData: file.data,
+                        mergedFiltersData: file.data,
                         modelsWithCounts: intialProductModels.modelsWithCounts,
                         brand: file.brand[0],
                         additionalFilters,
@@ -582,7 +584,7 @@ class Filters extends React.Component {
                             </Card>
                         ))
                     }
-                    <FiltersTable dataSource={!!mergedFiltersData.length ? mergedFiltersData : filteredData}/>
+                    <FiltersTable dataSource={mergedFiltersData}/>
                     <Drawer
                         visible
                         placement="bottom"
@@ -590,7 +592,7 @@ class Filters extends React.Component {
                         closable={false}
                         height={80}
                     >
-                        <h3>TOTAL produits sélectionnes: {mergedFiltersData.length || filteredData.length}</h3>
+                        <h3>TOTAL produits sélectionnes: {mergedFiltersData.length}</h3>
                     </Drawer>
                 </Col>
             </>
