@@ -186,7 +186,7 @@ class Filters extends React.Component {
             _.forEach(Object.keys(oneFilter.filters), oneFilterKey => {
                 updatedFiltersValues[oneFilterKey] = {
                     ...oneFilter.filters[oneFilterKey],
-                    selected: showAll ? oneFilter.filters[oneFilterKey].data : [],
+                    selected: showAll ? _.clone(oneFilter.filters[oneFilterKey].data) : [],
                 }
             });
 
