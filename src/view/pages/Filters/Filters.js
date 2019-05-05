@@ -108,6 +108,22 @@ class Filters extends React.Component {
 
     runFilter = () => {
         const {file} = this.props;
+        const { additionalFilters } = this.state;
+        const mergedAdditionalFilterModelsData = {};
+        const colName = 'NOM  MODELE / MODEL NAME';
+
+        _.forEach(Object.keys(additionalFilters), model => {
+            _.forEach(additionalFilters[model], ({filters}) => {
+                mergedAdditionalFilterModelsData[model] = {};
+                _.forEach(Object.keys(filters), filterKey => {
+                    if (mergedAdditionalFilterModelsData[model][filterKey]) {
+                        mergedAdditionalFilterModelsData[model][filterKey] = [...mergedAdditionalFilterModelsData[model][filterKey], ...filters[filterKey].selected]
+                    } else {
+                        mergedAdditionalFilterModelsData[model][filterKey] = filters[filterKey].selected;
+                    }
+                });
+            });
+        });
 
         const filteredData = _.filter(file.data, (item) => {
             const currentFilters = this.state.productModels.modelsWithData[item['NOM  MODELE / MODEL NAME']].filters;
@@ -116,13 +132,14 @@ class Filters extends React.Component {
             _.forEach(Object.keys(currentFilters), key => {
                 if (currentFilters[key].selected.includes(item[key])) {
                     isInFilteredArray += 1;
+                } else if (mergedAdditionalFilterModelsData[item[colName]] && mergedAdditionalFilterModelsData[item[colName]][key].includes(item[key])) {
+                    isInFilteredArray += 1;
                 }
             });
 
             return Object.keys(currentFilters).length === isInFilteredArray;
         });
 
-        const colName = 'NOM  MODELE / MODEL NAME';
         const modelsWithCounts = _.countBy(filteredData, colName);
 
         this.setState({
@@ -144,7 +161,7 @@ class Filters extends React.Component {
         }).length;
     };
 
-    onAdditionalFilter = (filterType, filter, isSelected, model, filterKey) => {
+    onAdditionalFilter = async (filterType, filter, isSelected, model, filterKey) => {
         const { additionalFilters, productModels } = this.state;
 
         const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
@@ -166,15 +183,17 @@ class Filters extends React.Component {
             };
         });
 
-        this.setState((st) => ({
+        await this.setState((st) => ({
             additionalFilters: {
                 ...st.additionalFilters,
                 [model]: updatedModelAdditionalFilters,
             }
         }));
+
+        this.runFilter();
     };
 
-    toggleAllAdditionalFilter = (model, filterKey, showAll) => {
+    toggleAllAdditionalFilter = async (model, filterKey, showAll) => {
         const { additionalFilters, productModels } = this.state;
 
         const updatedModelAdditionalFilters = _.map(additionalFilters[model], (oneFilter) => {
@@ -203,12 +222,14 @@ class Filters extends React.Component {
             };
         });
 
-        this.setState((st) => ({
+        await this.setState((st) => ({
             additionalFilters: {
                 ...st.additionalFilters,
                 [model]: updatedModelAdditionalFilters,
             }
         }));
+
+        this.runFilter();
     };
 
     addNewFilter = (model, modelFilters) => {
@@ -235,13 +256,15 @@ class Filters extends React.Component {
         }))
     };
 
-    removeFilter = (model, filterKey) => {
-        this.setState((state) => ({
+    removeFilter = async (model, filterKey) => {
+        await this.setState((state) => ({
             additionalFilters: {
                 ...state.additionalFilters,
                 [model]: _.filter(state.additionalFilters[model], filter => filter.key !== filterKey),
             }
         }));
+
+        this.runFilter();
     };
 
     componentDidMount() {
