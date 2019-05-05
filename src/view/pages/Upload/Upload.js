@@ -160,7 +160,7 @@ class Upload extends React.Component {
                         </Card>
                         <br/>
                         {
-                            fileData && !errors && <Button type="primary" onClick={this.onNext} size="large" style={{ width: '100%' }}>Next</Button>
+                            fileData && !errors && <Button type="primary" onClick={this.onNext} size="large" style={{ width: '100%' }}>Suivant</Button>
                         }
                         <br/>
                         {
