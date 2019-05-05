@@ -36,6 +36,7 @@ class Upload extends React.Component {
         fileData: null,
         errors: null,
         antFileList: [],
+        loading: false,
     };
 
     componentDidMount() {
@@ -60,6 +61,7 @@ class Upload extends React.Component {
 
             if (!errors) {
                 this.setState({
+                    loading: false,
                     fileData: {
                         brand,
                         columns,
@@ -69,11 +71,13 @@ class Upload extends React.Component {
             } else {
                 this.setState({
                     errors,
+                    loading: false,
                 })
             }
         } catch {
             this.setState({
                 errors: ['Incorrect file structure'],
+                loading: false,
             })
         }
 
@@ -114,13 +118,15 @@ class Upload extends React.Component {
         },
         beforeUpload: () => {
             setTimeout(() => {
-                this.setState({fileData: null, errors: null});
+                this.setState({fileData: null, errors: null, loading: true});
             }, 1)
         },
     };
 
     render() {
-        const {fileData, errors, antFileList} = this.state;
+        const {fileData, errors, antFileList, loading} = this.state;
+
+        console.log(loading);
 
         return (
             <div>
@@ -136,7 +142,7 @@ class Upload extends React.Component {
                                 <Col span={12}>
                                     <AntUpload.Dragger fileList={antFileList} {...this.draggerConfig}>
                                         <Icon
-                                            type="plus-circle"
+                                            type={loading ? 'loading' : 'plus-circle'}
                                             style={{
                                                 fontSize: '50px',
                                                 color: '#79B2FF',
