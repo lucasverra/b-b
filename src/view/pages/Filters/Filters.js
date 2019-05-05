@@ -19,6 +19,7 @@ class Filters extends React.Component {
         filteredData: null,
         modelsWithCounts: {},
         additionalFilters: {},
+        mergedFiltersData: [],
     };
 
     onClearAll = async (model) => {
@@ -106,7 +107,7 @@ class Filters extends React.Component {
         this.runFilter();
     };
 
-    runFilter = () => {
+    runAdditionalFilter = () => {
         const {file} = this.props;
         const { additionalFilters } = this.state;
         const mergedAdditionalFilterModelsData = {};
@@ -125,14 +126,33 @@ class Filters extends React.Component {
             });
         });
 
+
+        const filteredData = _.filter(file.data, (item) => {
+            const currentFilters = this.state.productModels.modelsWithData[item['NOM  MODELE / MODEL NAME']].filters;
+
+            let isInFilteredArray = 0;
+            _.forEach(Object.keys(currentFilters), key => {
+                if (mergedAdditionalFilterModelsData[item[colName]] && mergedAdditionalFilterModelsData[item[colName]][key].includes(item[key])) {
+                    isInFilteredArray += 1;
+                }
+            });
+
+            return Object.keys(currentFilters).length === isInFilteredArray;
+        });
+
+        this.mergeFilteredData(filteredData);
+    };
+
+    runFilter = () => {
+        const {file} = this.props;
+        const colName = 'NOM  MODELE / MODEL NAME';
+
         const filteredData = _.filter(file.data, (item) => {
             const currentFilters = this.state.productModels.modelsWithData[item['NOM  MODELE / MODEL NAME']].filters;
 
             let isInFilteredArray = 0;
             _.forEach(Object.keys(currentFilters), key => {
                 if (currentFilters[key].selected.includes(item[key])) {
-                    isInFilteredArray += 1;
-                } else if (mergedAdditionalFilterModelsData[item[colName]] && mergedAdditionalFilterModelsData[item[colName]][key].includes(item[key])) {
                     isInFilteredArray += 1;
                 }
             });
@@ -145,7 +165,17 @@ class Filters extends React.Component {
         this.setState({
             filteredData,
             modelsWithCounts,
-        })
+        });
+
+        this.mergeFilteredData(filteredData);
+    };
+
+    mergeFilteredData = (newFilteredData) => {
+        const { filteredData } = this.state;
+
+        this.setState({
+            mergedFiltersData: [...new Set([...newFilteredData, ...filteredData])],
+        });
     };
 
     countInProductModelByFilter = (filters, modelData) => {
@@ -190,7 +220,7 @@ class Filters extends React.Component {
             }
         }));
 
-        this.runFilter();
+        this.runAdditionalFilter();
     };
 
     toggleAllAdditionalFilter = async (model, filterKey, showAll) => {
@@ -229,7 +259,7 @@ class Filters extends React.Component {
             }
         }));
 
-        this.runFilter();
+        this.runAdditionalFilter();
     };
 
     addNewFilter = (model, modelFilters) => {
@@ -264,7 +294,7 @@ class Filters extends React.Component {
             }
         }));
 
-        this.runFilter();
+        this.runAdditionalFilter();
     };
 
     componentDidMount() {
@@ -314,7 +344,7 @@ class Filters extends React.Component {
 
     render() {
         const {
-            productModels, filteredData, modelsWithCounts, brand, additionalFilters,
+            productModels, filteredData, modelsWithCounts, brand, additionalFilters, mergedFiltersData,
         } = this.state;
 
         if (!filteredData) return <Skeleton/>;
@@ -552,7 +582,7 @@ class Filters extends React.Component {
                             </Card>
                         ))
                     }
-                    <FiltersTable dataSource={filteredData}/>
+                    <FiltersTable dataSource={!!mergedFiltersData.length ? mergedFiltersData : filteredData}/>
                     <Drawer
                         visible
                         placement="bottom"
@@ -560,7 +590,7 @@ class Filters extends React.Component {
                         closable={false}
                         height={80}
                     >
-                        <h3>TOTAL produits sélectionnes: {filteredData.length}</h3>
+                        <h3>TOTAL produits sélectionnes: {mergedFiltersData.length || filteredData.length}</h3>
                     </Drawer>
                 </Col>
             </>
