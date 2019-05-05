@@ -44,32 +44,39 @@ class Upload extends React.Component {
     }
 
     onFileUploadSuccess = (file) => {
-        const brand = file[0];
-        const columns = file[1];
-        const data = _.map(file.slice(2), item => {
-            const obj = {};
-            _.forEach(columns, (col, index) => {
-                obj[col.toUpperCase()] = item[index];
+        try {
+            const brand = file[0];
+            const columns = file[1];
+            const data = _.map(file.slice(2), item => {
+                const obj = {};
+                _.forEach(columns, (col, index) => {
+                    obj[col.toUpperCase()] = item[index];
+                });
+
+                return obj;
             });
 
-            return obj;
-        });
+            const errors = validate(data);
 
-        const errors = validate(data);
-
-        if (!errors) {
+            if (!errors) {
+                this.setState({
+                    fileData: {
+                        brand,
+                        columns,
+                        data,
+                    },
+                });
+            } else {
+                this.setState({
+                    errors,
+                })
+            }
+        } catch {
             this.setState({
-                fileData: {
-                    brand,
-                    columns,
-                    data,
-                },
-            });
-        } else {
-            this.setState({
-                errors,
+                errors: ['Incorrect file structure'],
             })
         }
+
     };
 
     onNext = () => {
