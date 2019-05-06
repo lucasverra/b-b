@@ -19,6 +19,7 @@ class Filters extends React.Component {
         filteredData: null,
         modelsWithCounts: {},
         additionalFilters: {},
+        additionalFiltersData: [],
         mergedFiltersData: [],
     };
 
@@ -107,7 +108,7 @@ class Filters extends React.Component {
         this.runFilter();
     };
 
-    runAdditionalFilter = () => {
+    runAdditionalFilter = async () => {
         const {file} = this.props;
         const { additionalFilters } = this.state;
         const mergedAdditionalFilterModelsData = {};
@@ -115,17 +116,20 @@ class Filters extends React.Component {
 
         _.forEach(Object.keys(additionalFilters), model => {
             _.forEach(additionalFilters[model], ({filters}) => {
-                mergedAdditionalFilterModelsData[model] = {};
+                mergedAdditionalFilterModelsData[model] = mergedAdditionalFilterModelsData[model] || {};
                 _.forEach(Object.keys(filters), filterKey => {
-                    if (mergedAdditionalFilterModelsData[model][filterKey]) {
-                        mergedAdditionalFilterModelsData[model][filterKey] = [...mergedAdditionalFilterModelsData[model][filterKey], ...filters[filterKey].selected]
-                    } else {
-                        mergedAdditionalFilterModelsData[model][filterKey] = filters[filterKey].selected;
-                    }
+                    mergedAdditionalFilterModelsData[model][filterKey] = mergedAdditionalFilterModelsData[model][filterKey] || [];
+                    _.forEach(filters[filterKey].selected, selected => {
+                        if (!mergedAdditionalFilterModelsData[model][filterKey].includes(selected)) {
+                            mergedAdditionalFilterModelsData[model][filterKey] = [
+                                ...mergedAdditionalFilterModelsData[model][filterKey],
+                                selected
+                            ]
+                        }
+                    });
                 });
             });
         });
-
 
         const filteredData = _.filter(file.data, (item) => {
             const currentFilters = this.state.productModels.modelsWithData[item['NOM  MODELE / MODEL NAME']].filters;
@@ -140,10 +144,14 @@ class Filters extends React.Component {
             return Object.keys(currentFilters).length === isInFilteredArray;
         });
 
-        this.mergeFilteredData(filteredData);
+        await this.setState({
+            additionalFiltersData: filteredData,
+        });
+
+        this.mergeFilteredData();
     };
 
-    runFilter = () => {
+    runFilter = async () => {
         const {file} = this.props;
         const colName = 'NOM  MODELE / MODEL NAME';
 
@@ -162,19 +170,19 @@ class Filters extends React.Component {
 
         const modelsWithCounts = _.countBy(filteredData, colName);
 
-        this.setState({
+        await this.setState({
             filteredData,
             modelsWithCounts,
         });
 
-        this.mergeFilteredData(filteredData);
+        this.mergeFilteredData();
     };
 
-    mergeFilteredData = (newFilteredData) => {
-        const { filteredData } = this.state;
+    mergeFilteredData = () => {
+        const { filteredData, additionalFiltersData } = this.state;
 
         this.setState({
-            mergedFiltersData: [...new Set([...newFilteredData, ...filteredData])],
+            mergedFiltersData: [...new Set([...filteredData, ...additionalFiltersData])],
         });
     };
 
