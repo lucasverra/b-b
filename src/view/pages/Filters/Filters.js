@@ -111,41 +111,28 @@ class Filters extends React.Component {
     runAdditionalFilter = async () => {
         const {file} = this.props;
         const { additionalFilters } = this.state;
-        const mergedAdditionalFilterModelsData = {};
+        let mergedAdditionalFilterModelsData = [];
         const colName = 'NOM  MODELE / MODEL NAME';
-
-        _.forEach(Object.keys(additionalFilters), model => {
-            _.forEach(additionalFilters[model], ({filters}) => {
-                mergedAdditionalFilterModelsData[model] = mergedAdditionalFilterModelsData[model] || {};
-                _.forEach(Object.keys(filters), filterKey => {
-                    mergedAdditionalFilterModelsData[model][filterKey] = mergedAdditionalFilterModelsData[model][filterKey] || [];
-                    _.forEach(filters[filterKey].selected, selected => {
-                        if (!mergedAdditionalFilterModelsData[model][filterKey].includes(selected)) {
-                            mergedAdditionalFilterModelsData[model][filterKey] = [
-                                ...mergedAdditionalFilterModelsData[model][filterKey],
-                                selected
-                            ]
-                        }
-                    });
-                });
-            });
-        });
-
-        const filteredData = _.filter(file.data, (item) => {
-            const currentFilters = this.state.productModels.modelsWithData[item['NOM  MODELE / MODEL NAME']].filters;
-
+        const oneFiltered = (modelData, filters) => _.filter(modelData, (item) => {
             let isInFilteredArray = 0;
-            _.forEach(Object.keys(currentFilters), key => {
-                if (mergedAdditionalFilterModelsData[item[colName]] && mergedAdditionalFilterModelsData[item[colName]][key].includes(item[key])) {
+            _.forEach(Object.keys(filters), key => {
+                if (filters[key].selected.includes(item[key])) {
                     isInFilteredArray += 1;
                 }
             });
 
-            return Object.keys(currentFilters).length === isInFilteredArray;
+            return Object.keys(filters).length === isInFilteredArray;
+        });
+
+        _.forEach(Object.keys(additionalFilters), model => {
+            _.forEach(additionalFilters[model], ({filters}) => {
+                const filtered = oneFiltered(file.data.filter(i => i[colName] === model), filters);
+                mergedAdditionalFilterModelsData = [...new Set([...mergedAdditionalFilterModelsData, ...filtered])];
+            });
         });
 
         await this.setState({
-            additionalFiltersData: filteredData,
+            additionalFiltersData: mergedAdditionalFilterModelsData,
         });
 
         this.mergeFilteredData();
