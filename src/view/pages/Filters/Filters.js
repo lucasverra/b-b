@@ -13,6 +13,9 @@ import {bindActionCreators} from 'redux';
 import FiltersTable from './FiltersTable';
 import Header from '../../components/Header';
 
+// other
+import writeExcel from './writeExcel';
+
 class Filters extends React.Component {
     state = {
         productModels: null,
@@ -595,7 +598,7 @@ class Filters extends React.Component {
                         <Col span={12}>
                             <Button
                                 type="primary"
-                                onClick={() => console.log(mergedFiltersData)}
+                                onClick={() => writeExcel(mergedFiltersData, this.props.file.name)}
                                 size="large"
                                 style={{ width: '100%', backgroundColor: '#00C851', borderColor: '#00C851' }}
                             >

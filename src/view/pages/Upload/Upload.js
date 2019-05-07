@@ -85,13 +85,17 @@ class Upload extends React.Component {
 
     onNext = () => {
         const {history, setFileData} = this.props;
-        const {fileData} = this.state;
+        const {fileData, fileName} = this.state;
+        const fileForSave = {
+            ...fileData,
+            name: fileName,
+        };
 
-        localforage.setItem('FILE', fileData, err => {
+        localforage.setItem('FILE', fileForSave, err => {
            if (err) {
                console.error(err)
            } else {
-               setFileData(fileData);
+               setFileData(fileForSave);
                history.push('/filters');
            }
 
@@ -110,7 +114,8 @@ class Upload extends React.Component {
                     uid: file.uid,
                     name: file.name,
                     status: 'done',
-                }]
+                }],
+                fileName: file.name,
             });
             setTimeout(() => {
                 onSuccess(null, file);
