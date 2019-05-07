@@ -580,6 +580,29 @@ class Filters extends React.Component {
                         ))
                     }
                     <FiltersTable dataSource={mergedFiltersData}/>
+                    <br />
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Button
+                                type="primary"
+                                onClick={() => this.props.history.push('/')}
+                                size="large"
+                                style={{ width: '100%', backgroundColor: '#c83b42', borderColor: '#c83b42' }}
+                            >
+                                Editer la sélection
+                            </Button>
+                        </Col>
+                        <Col span={12}>
+                            <Button
+                                type="primary"
+                                onClick={() => console.log(mergedFiltersData)}
+                                size="large"
+                                style={{ width: '100%', backgroundColor: '#00C851', borderColor: '#00C851' }}
+                            >
+                                Télécharger le fichier d’offre
+                            </Button>
+                        </Col>
+                    </Row>
                     <Drawer
                         visible
                         placement="bottom"

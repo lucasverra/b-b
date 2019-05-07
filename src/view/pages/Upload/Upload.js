@@ -126,8 +126,6 @@ class Upload extends React.Component {
     render() {
         const {fileData, errors, antFileList, loading} = this.state;
 
-        console.log(loading);
-
         return (
             <div>
                 <Header />
