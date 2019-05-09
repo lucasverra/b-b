@@ -598,7 +598,7 @@ class Filters extends React.Component {
                         <Col span={12}>
                             <Button
                                 type="primary"
-                                onClick={() => writeExcel(mergedFiltersData, this.props.file.name)}
+                                onClick={() => writeExcel(mergedFiltersData, this.props.file.name, this.props.file.columns)}
                                 size="large"
                                 style={{ width: '100%', backgroundColor: '#00C851', borderColor: '#00C851' }}
                             >
