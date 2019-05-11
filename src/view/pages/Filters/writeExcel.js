@@ -27,8 +27,6 @@ const writeExcel = (data, fileName, columns, brand) => {
     });
     ws.state = 'visible';
 
-    ws.addRow(['LOGO']);
-
     ws.columns = columns.map((col, i) => {
         const style = {alignment: {wrapText: true, horizontal: 'center'}};
 
