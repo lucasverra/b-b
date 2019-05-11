@@ -23,11 +23,14 @@ const writeExcel = (data, fileName, columns, brand) => {
     wb.creator = 'BB';
     wb.modified = new Date();
     const ws = wb.addWorksheet('Main', {
-        pageSetup: {paperSize: data.length, orientation: 'landscape', fitToPage: true}
+        pageSetup: {paperSize: data.length, orientation: 'landscape', fitToPage: true},
     });
     ws.state = 'visible';
+
+    ws.addRow(['LOGO']);
+
     ws.columns = columns.map((col, i) => {
-        const style = {alignment: {wrapText: true, horizontal: 'left'}};
+        const style = {alignment: {wrapText: true, horizontal: 'center'}};
 
         const wideCols = [
             'ACCROCHE PRODUIT',
@@ -52,8 +55,8 @@ const writeExcel = (data, fileName, columns, brand) => {
     ws.getRow(1).fill = {
         type: 'pattern',
         pattern: 'darkTrellis',
-        fgColor: {argb: 'FF0000FF'},
-        bgColor: {argb: 'FF0000FF'}
+        fgColor: {argb: '204E78'},
+        bgColor: {argb: '204E78'},
     };
     ws.getRow(1).font = {
         color: {argb: 'FFFFFFFF'},
