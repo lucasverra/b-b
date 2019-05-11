@@ -43,7 +43,7 @@ const writeExcel = (data, fileName, columns) => {
     });
     ws.state = 'visible';
     ws.columns = columns.map((col, i) => {
-        const style = { alignment: { wrapText: true } };
+        const style = {alignment: {wrapText: true, horizontal: 'left'}};
 
         const wideCols = [
             'ACCROCHE PRODUIT',
@@ -57,7 +57,7 @@ const writeExcel = (data, fileName, columns) => {
 
         if (wideCols.includes(col)) {
             return {header: col, key: col, width: 150, style}
-        } else if (i === 42){
+        } else if (i === 42) {
             // warranty
             return {header: col, key: col, width: 150, style}
         }
@@ -65,6 +65,15 @@ const writeExcel = (data, fileName, columns) => {
         return {header: col, key: col, width: 50, style}
     });
     ws.addRows(data);
+    ws.getRow(1).fill = {
+        type: 'pattern',
+        pattern: 'darkTrellis',
+        fgColor: {argb: 'FFFFFF00'},
+        bgColor: {argb: 'FF0000FF'}
+    };
+    ws.getRow(1).font = {
+        color: {argb: 'FFFFFFFF'}
+    };
 
     wb.xlsx.writeBuffer().then(buf => {
         const blob = new Blob([buf], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
