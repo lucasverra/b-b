@@ -18,7 +18,7 @@ function saveAs(data, fileName) {
         0);
 }
 
-const writeExcel = (data, fileName, columns) => {
+const writeExcel = (data, fileName, columns, brand) => {
     const wb = new Excel.Workbook();
     wb.creator = 'BB';
     wb.modified = new Date();
@@ -77,10 +77,15 @@ const writeExcel = (data, fileName, columns) => {
     //         });
     //     }
     // });
+    const date = new Date();
+    const day = date.getDay() < 10 ? `0${date.getDay()}` : date.getDay();
+    const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
+    const year = date.getFullYear();
+    const fullDate = `${day}.${month}.${year}`;
 
     wb.xlsx.writeBuffer().then(buf => {
         const blob = new Blob([buf], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-        saveAs(blob, `BB-${fileName}`);
+        saveAs(blob, `B&B_ficher_offre_${brand}_(${fullDate}).xlsx`);
     }).catch(console.error);
 };
 
