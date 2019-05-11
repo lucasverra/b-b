@@ -1,24 +1,4 @@
 import Excel from 'exceljs/dist/es5/exceljs.browser.js';
-import _ from 'underscore';
-
-function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-    return buf;
-}
-
-function getBase64Image(image_src, mime_type = "image/jpeg") {
-    // New Canvas
-    const canvas = document.createElement('canvas');
-    canvas.width = image_src.width;
-    canvas.height = image_src.height;
-    // Draw
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(image_src, 0, 0);
-    // Image Base64
-    return canvas.toDataURL();
-}
 
 function saveAs(data, fileName) {
     const a = document.createElement("a");
@@ -65,15 +45,15 @@ const writeExcel = (data, fileName, columns) => {
         return {header: col, key: col, width: 50, style}
     });
     ws.addRows(data);
-    ws.getRow(1).fill = {
-        type: 'pattern',
-        pattern: 'darkTrellis',
-        fgColor: {argb: 'FFFFFF00'},
-        bgColor: {argb: 'FF0000FF'}
-    };
-    ws.getRow(1).font = {
-        color: {argb: 'FFFFFFFF'}
-    };
+    // ws.getRow(1).fill = {
+    //     type: 'pattern',
+    //     pattern: 'darkTrellis',
+    //     fgColor: {argb: 'FFFFFF00'},
+    //     bgColor: {argb: 'FF0000FF'}
+    // };
+    // ws.getRow(1).font = {
+    //     color: {argb: 'FFFFFFFF'}
+    // };
 
     wb.xlsx.writeBuffer().then(buf => {
         const blob = new Blob([buf], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
