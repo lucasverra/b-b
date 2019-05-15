@@ -51,7 +51,7 @@ class Upload extends React.Component {
             const data = _.map(file.slice(2), item => {
                 const obj = {};
                 _.forEach(columns, (col, index) => {
-                    obj[col.toUpperCase()] = item[index];
+                    obj[col.toUpperCase()] = typeof item[index] === "number" ? item[index].toString() : item[index];
                 });
 
                 return obj;
