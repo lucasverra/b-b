@@ -78,22 +78,23 @@ const writeExcel = (data, fileName, columns, brand) => {
         size: 16,
     };
 
-    // data.forEach((item, i) => {
-    //     if (i > 1) {
-    //         const imageIds = {
-    //             [i]: wb.addImage({
-    //                 base64: getBase64Image(encodeURI(item['LINK PHOTO'])),
-    //                 extension: 'jpeg',
-    //             })
-    //         };
-    //
-    //         ws.addImage(imageIds[i], {
-    //             tl: { col: 4.2, row: i + 1 },
-    //             br: { col: 5.2, row: i + 2 },
-    //             ext: { width: 200, height: 250 }
-    //         });
-    //     }
-    // });
+    data.forEach((item, i) => {
+        const imageIds = {
+            [i]: wb.addImage({
+                base64: getBase64Image(encodeURI(item['LINK PHOTO'])),
+                extension: 'jpeg',
+            })
+        };
+
+        ws.addImage(imageIds[i], {
+            tl: {col: 4.2, row: i * 10.43 + 4.5},
+            br: {col: 5.2, row: i},
+            editAs: 'absolute',
+            // ext: {width: 200, height: 250},
+        });
+    });
+
+
     const date = new Date();
     const day = date.getDay() < 10 ? `0${date.getDay()}` : date.getDay();
     const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
