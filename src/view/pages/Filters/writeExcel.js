@@ -56,12 +56,10 @@ const writeExcel = (data, fileName, columns, brand, callback) => {
             'FICHE GARANTIE',
             'DESCRIPTION FOR PRODUCTION',
             'DESCRIPTION OF BRAND / BASE LINE',
+            'ACCROCHE MARQUE /BASE LINE',
         ];
 
-        if (wideCols.includes(col)) {
-            return {key: col, width: 150, style}
-        } else if (i === 42) {
-            // warranty
+        if (wideCols.includes(col) || i === 42) {
             return {key: col, width: 150, style}
         }
 
