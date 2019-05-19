@@ -94,6 +94,9 @@ const writeExcel = (data, fileName, columns, brand, callback) => {
     };
 
     data.forEach((item, i) => {
+        ws.getRow(i + 3).height = 120;
+        ws.getRow(i + 3).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
         getBase64Image(encodeURI(item['LINK PHOTO']), dataUrl => {
             const imageIds = {
                 [i]: wb.addImage({
