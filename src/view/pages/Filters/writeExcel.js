@@ -87,10 +87,10 @@ const writeExcel = (data, fileName, columns, brand) => {
         };
 
         ws.addImage(imageIds[i], {
-            tl: {col: 4.2, row: i * 10.43 + 4.5},
-            br: {col: 5.2, row: i},
-            editAs: 'absolute',
-            // ext: {width: 200, height: 250},
+            tl: {col: 4, row: i + 2},
+            br: {col: 5, row: i + 3},
+            editAs: 'oneCell',
+            ext: {width: 350, height: 233},
         });
     });
 
