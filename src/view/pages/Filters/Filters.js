@@ -20,6 +20,7 @@ class Filters extends React.Component {
     state = {
         productModels: null,
         filteredData: null,
+        exportLoading: false,
         modelsWithCounts: {},
         additionalFilters: {},
         additionalFiltersData: [],
@@ -342,9 +343,23 @@ class Filters extends React.Component {
         }
     }
 
+    onFileExport = () => {
+        const { mergedFiltersData, brand } = this.state;
+        const { file } = this.props;
+        this.setState({
+            exportLoading: true,
+        });
+
+        writeExcel(mergedFiltersData, file.name, file.columns, brand, () => {
+            this.setState({
+                exportLoading: false,
+            })
+        })
+    };
+
     render() {
         const {
-            productModels, filteredData, modelsWithCounts, brand, additionalFilters, mergedFiltersData,
+            productModels, filteredData, modelsWithCounts, brand, additionalFilters, mergedFiltersData, exportLoading,
         } = this.state;
 
         if (!filteredData) return <Skeleton/>;
@@ -599,8 +614,9 @@ class Filters extends React.Component {
                         <Col span={12}>
                             <Button
                                 type="primary"
-                                onClick={() => writeExcel(mergedFiltersData, this.props.file.name, this.props.file.columns, brand)}
+                                onClick={this.onFileExport}
                                 size="large"
+                                loading={exportLoading}
                                 style={{ width: '100%', backgroundColor: '#00C851', borderColor: '#00C851' }}
                             >
                                 Télécharger le fichier d’offre
