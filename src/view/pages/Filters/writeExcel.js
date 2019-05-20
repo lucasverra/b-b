@@ -13,7 +13,8 @@ function getBase64Image(url, callback, outputFormat = 'image/jpeg') {
         const dataURL = canvas.toDataURL(outputFormat);
         callback(dataURL);
     };
-    img.src = `https://cors-anywhere.herokuapp.com/${url}`;
+    // img.src = `https://cors-anywhere.herokuapp.com/${url}`;
+    img.src = url;
 }
 
 function saveAs(data, fileName) {
