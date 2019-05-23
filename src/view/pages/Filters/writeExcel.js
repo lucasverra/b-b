@@ -46,7 +46,7 @@ const writeExcel = (data, fileName, columns, brand, callback) => {
     });
     ws.state = 'visible';
 
-    ws.columns = columns.map((col, i) => {
+    const allColumns = columns.map((col, i) => {
         const style = {alignment: {wrapText: true, horizontal: 'center'}};
 
         const wideCols = [
@@ -55,20 +55,35 @@ const writeExcel = (data, fileName, columns, brand, callback) => {
             'COMPOSITION DETAILÉE ',
             'DETAILED COMPOSITION',
             'FICHE GARANTIE',
-            'DESCRIPTION FOR PRODUCTION',
             'DESCRIPTION OF BRAND / BASE LINE',
             'ACCROCHE MARQUE /BASE LINE',
         ];
 
-        if (wideCols.includes(col) || i === 42) {
+        if (wideCols.includes(col.toUpperCase()) || i === 42) {
             return {key: col, width: 150, style}
         }
 
         return {key: col, width: 50, style}
     });
 
+    const colsForRemove = [
+        'CHARGE MAXIMALE (KG)'.replace(' ', '-'),
+        'PRIX EXW 2018 (EUROS)'.replace(' ', '-'),
+        'PRODUCTION NAME'.replace(' ', '-'),
+        'FABRIC NAME AND NUMBER'.replace(' ', '-'),
+        'COULEUR'.replace(' ', '-'),
+        'PRODUCTION CODE'.replace(' ', '-'),
+        'DESCRIPTION FOR PRODUCTION'.replace(' ', '-'),
+        'STOCK FOURNISSEUR'.replace(' ', '-'),
+    ];
 
-    ws.getRow(2).values = columns;
+    const filteredColumns = allColumns.filter(col => {
+        return !colsForRemove.includes(col.key.toUpperCase().replace(' ', '-'))
+        && !col.key.toUpperCase().replace(' ', '-').includes(colsForRemove[0])
+    });
+
+    ws.columns = filteredColumns;
+    ws.getRow(2).values = filteredColumns.map(col => col.key);
     ws.getRow(1).values = [brand, ..._.times(columns.length - 1, () => ' ')];
     ws.addRows(data);
     ws.getRow(1).fill = {
