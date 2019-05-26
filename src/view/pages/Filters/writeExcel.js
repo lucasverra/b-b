@@ -14,10 +14,12 @@ function getBase64Image(url, callback, onError, outputFormat = 'image/jpeg') {
         callback(dataURL);
     };
     img.onerror = function () {
-        onError({
-            message: 'Can not get image',
-            imageUrl: url,
-        })
+        if (onError) {
+            onError({
+                message: 'Can not get image',
+                imageUrl: url,
+            })
+        }
     };
     // img.src = `https://cors-anywhere.herokuapp.com/${url}`;
     img.src = `https://b-b-cors-fix.glitch.me/${url}`;
@@ -120,9 +122,9 @@ const writeExcel = (data, fileName, columns, brand, callback, onImageError) => {
     data.forEach((item, i) => {
         ws.getRow(i + 3).height = 120;
         ws.getRow(i + 3).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        const id = i;
 
         getBase64Image(encodeURI(item['LINK PHOTO']), async dataUrl => {
-            const id = i;
             imageIds[id] = wb.addImage({base64: dataUrl, extension: 'jpeg'});
 
             ws.addImage(imageIds[id], {
@@ -132,14 +134,24 @@ const writeExcel = (data, fileName, columns, brand, callback, onImageError) => {
                 // ext: {width: 350, height: 233},
             });
 
-            if (ws.getImages().length === data.length) {
+            if (Object.keys(imageIds).length === data.length) {
                 wb.xlsx.writeBuffer().then(buf => {
                     const blob = new Blob([buf], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
                     saveAs(blob, `B&B_ficher_offre_${brand}_(${fullDate}).xlsx`);
                     callback();
                 }).catch(console.error);
             }
-        }, onImageError);
+        }, (error) => {
+            imageIds[id] = {};
+            onImageError(error);
+            if (Object.keys(imageIds).length === data.length) {
+                wb.xlsx.writeBuffer().then(buf => {
+                    const blob = new Blob([buf], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                    saveAs(blob, `B&B_ficher_offre_${brand}_(${fullDate}).xlsx`);
+                    callback();
+                }).catch(console.error);
+            }
+        });
     });
 };
 

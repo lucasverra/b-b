@@ -359,7 +359,6 @@ class Filters extends React.Component {
         }, (error) => {
             this.setState(st => ({
                 imagesError: [...st.imagesError, error],
-                exportLoading: false,
             }))
         })
     };
