@@ -116,26 +116,23 @@ const writeExcel = (data, fileName, columns, brand, callback, onImageError) => {
         size: 16,
     };
 
+    const imageIds = {};
     data.forEach((item, i) => {
         ws.getRow(i + 3).height = 120;
         ws.getRow(i + 3).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
-        getBase64Image(encodeURI(item['LINK PHOTO']), dataUrl => {
-            const imageIds = {
-                [i]: wb.addImage({
-                    base64: dataUrl,
-                    extension: 'jpeg',
-                })
-            };
+        getBase64Image(encodeURI(item['LINK PHOTO']), async dataUrl => {
+            const id = i;
+            imageIds[id] = wb.addImage({base64: dataUrl, extension: 'jpeg'});
 
-            ws.addImage(imageIds[i], {
+            ws.addImage(imageIds[id], {
                 tl: {col: 4, row: i + 2},
                 br: {col: 5, row: i + 3},
                 editAs: 'oneCell',
-                ext: {width: 350, height: 233},
+                // ext: {width: 350, height: 233},
             });
 
-            if (data.length === i + 1) {
+            if (ws.getImages().length === data.length) {
                 wb.xlsx.writeBuffer().then(buf => {
                     const blob = new Blob([buf], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
                     saveAs(blob, `B&B_ficher_offre_${brand}_(${fullDate}).xlsx`);
