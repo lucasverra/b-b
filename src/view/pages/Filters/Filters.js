@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Skeleton, Button, Col, Row, Drawer, Icon} from 'antd';
+import {Card, Skeleton, Button, Col, Row, Drawer, Icon, Alert} from 'antd';
 import _ from 'underscore';
 import localforage from 'localforage';
 
@@ -25,6 +25,7 @@ class Filters extends React.Component {
         additionalFilters: {},
         additionalFiltersData: [],
         mergedFiltersData: [],
+        imagesError: [],
     };
 
     onClearAll = async (model) => {
@@ -348,18 +349,24 @@ class Filters extends React.Component {
         const { file } = this.props;
         this.setState({
             exportLoading: true,
+            imagesError: [],
         });
 
         writeExcel(mergedFiltersData, file.name, file.columns, brand, () => {
             this.setState({
                 exportLoading: false,
             })
+        }, (error) => {
+            this.setState(st => ({
+                imagesError: [...st.imagesError, error],
+                exportLoading: false,
+            }))
         })
     };
 
     render() {
         const {
-            productModels, filteredData, modelsWithCounts, brand, additionalFilters, mergedFiltersData, exportLoading,
+            productModels, filteredData, modelsWithCounts, brand, additionalFilters, mergedFiltersData, exportLoading, imagesError,
         } = this.state;
 
         if (!filteredData) return <Skeleton/>;
@@ -623,6 +630,13 @@ class Filters extends React.Component {
                             </Button>
                         </Col>
                     </Row>
+
+                    {
+                        imagesError.map(error => (
+                            <Alert style={{ marginTop: '16px' }} message={`${error.message} - ${error.imageUrl}`} type="error" />
+                        ))
+                    }
+
                     <Drawer
                         visible
                         placement="bottom"

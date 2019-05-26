@@ -1,7 +1,7 @@
 import Excel from 'exceljs/dist/es5/exceljs.browser.js';
 import _ from 'underscore';
 
-function getBase64Image(url, callback, outputFormat = 'image/jpeg') {
+function getBase64Image(url, callback, onError, outputFormat = 'image/jpeg') {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     img.onload = function(){
@@ -13,8 +13,15 @@ function getBase64Image(url, callback, outputFormat = 'image/jpeg') {
         const dataURL = canvas.toDataURL(outputFormat);
         callback(dataURL);
     };
+    img.onerror = function () {
+        onError({
+            message: 'Can not get image',
+            imageUrl: url,
+        })
+    };
     // img.src = `https://cors-anywhere.herokuapp.com/${url}`;
-    img.src = url;
+    img.src = `https://b-b-cors-fix.glitch.me/${url}`;
+    // img.src = url;
 }
 
 function saveAs(data, fileName) {
@@ -31,7 +38,7 @@ function saveAs(data, fileName) {
         0);
 }
 
-const writeExcel = (data, fileName, columns, brand, callback) => {
+const writeExcel = (data, fileName, columns, brand, callback, onImageError) => {
     const date = new Date();
     const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
     const month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
@@ -135,7 +142,7 @@ const writeExcel = (data, fileName, columns, brand, callback) => {
                     callback();
                 }).catch(console.error);
             }
-        });
+        }, onImageError);
     });
 };
 
