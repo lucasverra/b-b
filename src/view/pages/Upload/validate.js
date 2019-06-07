@@ -43,7 +43,8 @@ export default (data) => {
             errors.modelName = 'La colonne NOM  MODELE / MODEL NAME n’est pas complète.';
         }
         if (!item['OOS / NEW']) {
-            errors.type = 'In Column `OOS/NEW` every record should have value.';
+            // errors.type = 'In Column `OOS/NEW` every record should have value.';
+            finalData.push(item)
         } else if (item['OOS / NEW'].toUpperCase().replace(' ', '') !== 'OOS') {
             // check if item is not in oos and add it into finalData
             finalData.push(item)
