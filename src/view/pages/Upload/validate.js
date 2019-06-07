@@ -2,6 +2,7 @@ import _ from 'underscore';
 
 export default (data) => {
     const errors = {};
+    const finalData = [];
     const marque = data[0]['MARQUE / BRAND'];
     const isAllLinkPhotoUnique = Object.keys(_.countBy(data, 'LINK PHOTO')).length === data.length;
     const isAllReferencesBBUnique = Object.keys(_.countBy(data, 'REFERENCES  B&B')).length === data.length;
@@ -41,7 +42,13 @@ export default (data) => {
         if (!item['NOM  MODELE / MODEL NAME']) {
             errors.modelName = 'La colonne NOM  MODELE / MODEL NAME n’est pas complète.';
         }
-        if (!item['TYPE/ CATEGORIE PRODUIT']) {
+        if (!item['OOS / NEW']) {
+            errors.type = 'In Column `OOS/NEW` every record should have value.';
+        } else if (item['OOS / NEW'].toUpperCase().replace(' ', '') !== 'OOS') {
+            // check if item is not in oos and add it into finalData
+            finalData.push(item)
+        }
+         if (!item['TYPE/ CATEGORIE PRODUIT']) {
             errors.type = 'La colonne TYPE/ CATEGORIE PRODUIT n’est pas complète.';
         }
         // other
@@ -50,5 +57,8 @@ export default (data) => {
         }
     });
 
-    return Object.keys(errors).length > 0 ? errors : null;
+    return {
+        errors: Object.keys(errors).length > 0 ? errors : null,
+        finalData,
+    };
 }

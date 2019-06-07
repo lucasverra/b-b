@@ -57,7 +57,7 @@ class Upload extends React.Component {
                 return obj;
             });
 
-            const errors = validate(data);
+            const {errors, finalData} = validate(data);
 
             if (!errors) {
                 this.setState({
@@ -65,7 +65,7 @@ class Upload extends React.Component {
                     fileData: {
                         brand,
                         columns,
-                        data,
+                        data: finalData,
                     },
                 });
             } else {

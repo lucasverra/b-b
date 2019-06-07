@@ -22,7 +22,7 @@ function getBase64Image(url, callback, onError, outputFormat = 'image/jpeg') {
         }
     };
     // img.src = `https://cors-anywhere.herokuapp.com/${url}`;
-    img.src = `https://b-b-cors-fix.glitch.me/${url}`;
+    img.src = url;
     // img.src = url;
 }
 
