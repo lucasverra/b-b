@@ -80,7 +80,7 @@ const writeExcel = (data, fileName, columns, brand, callback, onImageError) => {
         'PRIX EXW 2018 (EUROS)'.replace(' ', '-'),
         'PRODUCTION NAME'.replace(' ', '-'),
         'FABRIC NAME AND NUMBER'.replace(' ', '-'),
-        'COULEUR'.replace(' ', '-'),
+        'COULEUR POLISH'.replace(' ', '-'),
         'PRODUCTION CODE'.replace(' ', '-'),
         'DESCRIPTION FOR PRODUCTION'.replace(' ', '-'),
         'STOCK FOURNISSEUR'.replace(' ', '-'),
