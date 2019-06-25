@@ -39,6 +39,9 @@ export default (data) => {
         if (!item['TISSU/MATERIAU']) {
             errors.tissuMateriau = 'La colonne TISSU/MATERIAU n’est pas complète.';
         }
+        if (!item['COULEUR PIEDS']) {
+            errors.couleurPieds = 'La colonne COULEUR PIEDS n’est pas complète.';
+        }
         if (!item['NOM  MODELE / MODEL NAME']) {
             errors.modelName = 'La colonne NOM  MODELE / MODEL NAME n’est pas complète.';
         }
